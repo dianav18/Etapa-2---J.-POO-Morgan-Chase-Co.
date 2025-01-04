@@ -95,4 +95,6 @@ public interface TransactionVisitor {
      * @param changeInterestRateTransaction the change interest rate transaction
      */
     void visit(ChangeInterestRateTransaction changeInterestRateTransaction);
+
+    void visit(WithdrawSavingsTransaction withdrawSavingsTransaction);
 }

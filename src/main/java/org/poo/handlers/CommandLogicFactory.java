@@ -111,6 +111,15 @@ public final class CommandLogicFactory {
                     command.getTimestamp(),
                     users
             );
+            case "withdrawSavings" -> new WithdrawSavingsCommand(
+                    "withdrawSavings",
+                    command.getAccount(),
+                    command.getAmount(),
+                    command.getCurrency(),
+                    command.getTimestamp(),
+                    users,
+                    currencyConverter
+            );
             default -> null;
         };
     }

@@ -1,6 +1,8 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.poo.bankInput.Account;
+import org.poo.bankInput.Card;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.CardDestroyedTransaction;
 import org.poo.handlers.CommandHandler;
@@ -32,8 +34,8 @@ public final class DeleteCardCommand implements CommandHandler {
     @Override
     public void execute(final ArrayNode output) {
         for (final User user : users) {
-            for (final var account : user.getAccounts()) {
-                for (final var card : account.getCards()) {
+            for (final Account account : user.getAccounts()) {
+                for (final Card card : account.getCards()) {
                     if (card.getCardNumber().equals(cardNumber)) {
                         account.addTransaction(new CardDestroyedTransaction(
                                 timestamp,

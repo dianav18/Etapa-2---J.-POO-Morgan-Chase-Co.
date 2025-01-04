@@ -146,4 +146,11 @@ public final class TransactionPrinter implements TransactionVisitor {
         node.put("timestamp", changeInterestRateTransaction.getTimestamp());
     }
 
+    @Override
+    public void visit(final WithdrawSavingsTransaction withdrawSavingsTransaction) {
+        final ObjectNode node = output.addObject();
+        node.put("description", withdrawSavingsTransaction.getDescription());
+        node.put("timestamp", withdrawSavingsTransaction.getTimestamp());
+    }
+
 }

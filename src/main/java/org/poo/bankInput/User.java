@@ -17,6 +17,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String birthDate;
+    private String Occupation;
     private List<Account> accounts;
     private List<Transaction> transactions;
 
@@ -27,10 +29,12 @@ public class User {
      * @param lastName  the last name
      * @param email     the email
      */
-    public User(final String firstName, final String lastName, final String email) {
+    public User(final String firstName, final String lastName, final String email, final String birthDate, final String Occupation) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.birthDate = birthDate;
+        this.Occupation = Occupation;
         accounts = new ArrayList<>();
         transactions = new ArrayList<>();
     }

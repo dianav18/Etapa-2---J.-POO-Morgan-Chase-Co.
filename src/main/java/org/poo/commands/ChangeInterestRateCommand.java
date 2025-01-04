@@ -2,6 +2,7 @@ package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.poo.bankInput.Account;
 import org.poo.bankInput.SavingsAccount;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.ChangeInterestRateTransaction;
@@ -39,7 +40,7 @@ public final class ChangeInterestRateCommand implements CommandHandler {
     public void execute(final ArrayNode output) {
         boolean accountIsSavinAccount = false;
         for (final User user : users) {
-            for (final var account : user.getAccounts()) {
+            for (final Account account : user.getAccounts()) {
                 if (account.getAccountIBAN().equals(accountIBAN)) {
                     if (account.getType().equals("savings")) {
                         accountIsSavinAccount = true;

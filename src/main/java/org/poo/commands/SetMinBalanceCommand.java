@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.poo.bankInput.Account;
 import org.poo.bankInput.User;
 import org.poo.handlers.CommandHandler;
 
@@ -37,8 +38,8 @@ public final class SetMinBalanceCommand implements CommandHandler {
 
     @Override
     public void execute(final ArrayNode output) {
-        for (final var user : users) {
-            for (final var account : user.getAccounts()) {
+        for (final User user : users) {
+            for (final Account account : user.getAccounts()) {
                 if (account.getAccountIBAN().equals(accountIBAN)) {
                     account.setMinBalance(amount);
                     return;

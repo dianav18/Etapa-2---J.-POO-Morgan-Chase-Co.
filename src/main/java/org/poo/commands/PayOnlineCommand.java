@@ -109,7 +109,7 @@ public final class PayOnlineCommand implements CommandHandler {
                                 }
 
                                 if (!found) {
-                                    final Commerciant newCommerciant = new Commerciant(commerciant);
+                                    final Commerciant newCommerciant = new Commerciant.Builder(commerciant).build();
                                     newCommerciant.addSpentAmount(finalAmount);
                                     account.addCommerciant(newCommerciant);
                                     account.addCommerciantTransaction(new CommerciantTransaction(

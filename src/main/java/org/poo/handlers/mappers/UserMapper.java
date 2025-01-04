@@ -29,7 +29,7 @@ public final class UserMapper {
             for (final UserInput userInput : userInputs) {
                 users.add(new User(userInput.getFirstName(),
                         userInput.getLastName(),
-                        userInput.getEmail()));
+                        userInput.getEmail(), userInput.getBirthDate(), userInput.getOccupation()));
             }
         }
         return users;

@@ -16,7 +16,8 @@ import java.util.List;
     * a list of cards, an alias, a minimum balance,
     * a list of commerciants, a list of commerciant
     * transactions and a list of transactions.
-    * Class is extended by ClassicAccount and SavingsAccount.
+    * Class is extended by ClassicAccount, SavingsAccount
+    * and BusinessAccount.
  */
 @Getter
 @Setter

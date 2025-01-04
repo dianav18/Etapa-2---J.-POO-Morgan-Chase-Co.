@@ -1,10 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.bankInput.Account;
-import org.poo.bankInput.ClassicAccount;
-import org.poo.bankInput.SavingsAccount;
-import org.poo.bankInput.User;
+import org.poo.bankInput.*;
 import org.poo.bankInput.transactions.AccountCreatedTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.utils.Utils;
@@ -55,6 +52,8 @@ public final class AddAccountCommand implements CommandHandler {
                     newAccount = new ClassicAccount(accountIBAN, currency);
                 } else if (accountType.equals("savings")) {
                     newAccount = new SavingsAccount(accountIBAN, currency, interestRate);
+                } else if (accountType.equals("business")) {
+                    newAccount = new BusinessAccount(accountIBAN, currency);
                 } else {
                     throw new IllegalArgumentException("Invalid account type: " + accountType);
                 }
