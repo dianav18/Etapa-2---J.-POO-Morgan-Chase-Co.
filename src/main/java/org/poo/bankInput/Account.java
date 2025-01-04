@@ -54,6 +54,14 @@ public class Account {
         this.typeOfPlan = typeOfPlan;
     }
 
+    public void setBalance(final double balance) {
+        this.balance = rountToTwoDecimals(balance);
+    }
+
+    private double rountToTwoDecimals(final double value) {
+        return Math.round(value * 100.0) / 100.0;
+    }
+
     /**
      * Add card.
      *
