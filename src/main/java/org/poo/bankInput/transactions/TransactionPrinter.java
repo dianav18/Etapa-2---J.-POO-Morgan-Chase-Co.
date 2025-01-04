@@ -153,4 +153,13 @@ public final class TransactionPrinter implements TransactionVisitor {
         node.put("timestamp", withdrawSavingsTransaction.getTimestamp());
     }
 
+    @Override
+    public void visit(final UpgradePlanTransaction upgradePlanTransaction) {
+        final ObjectNode node = output.addObject();
+        node.put("description", upgradePlanTransaction.getDescription());
+        node.put("timestamp", upgradePlanTransaction.getTimestamp());
+        node.put("accountIBAN", upgradePlanTransaction.getAccountIBAN());
+        node.put("newPlanType", upgradePlanTransaction.getNewPlanType());
+    }
+
 }

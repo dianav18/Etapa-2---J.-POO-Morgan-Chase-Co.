@@ -48,12 +48,18 @@ public final class AddAccountCommand implements CommandHandler {
 
                 final String accountIBAN = Utils.generateIBAN();
 
+                String typeOfPlan = "standard";
+
+                if (user.getOccupation().equals("student")) {
+                    typeOfPlan = "student";
+                }
+
                 if (accountType.equals("classic")) {
-                    newAccount = new ClassicAccount(accountIBAN, currency);
+                    newAccount = new ClassicAccount(accountIBAN, currency, typeOfPlan);
                 } else if (accountType.equals("savings")) {
-                    newAccount = new SavingsAccount(accountIBAN, currency, interestRate);
+                    newAccount = new SavingsAccount(accountIBAN, currency, interestRate, typeOfPlan);
                 } else if (accountType.equals("business")) {
-                    newAccount = new BusinessAccount(accountIBAN, currency);
+                    newAccount = new BusinessAccount(accountIBAN, currency, typeOfPlan);
                 } else {
                     throw new IllegalArgumentException("Invalid account type: " + accountType);
                 }

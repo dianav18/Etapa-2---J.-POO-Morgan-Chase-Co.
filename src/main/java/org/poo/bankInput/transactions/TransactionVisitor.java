@@ -97,4 +97,6 @@ public interface TransactionVisitor {
     void visit(ChangeInterestRateTransaction changeInterestRateTransaction);
 
     void visit(WithdrawSavingsTransaction withdrawSavingsTransaction);
+
+    void visit(UpgradePlanTransaction upgradePlanTransaction);
 }

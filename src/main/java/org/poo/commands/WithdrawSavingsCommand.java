@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bankInput.Account;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.WithdrawSavingsTransaction;
@@ -36,6 +37,8 @@ public class WithdrawSavingsCommand implements CommandHandler {
 
     @Override
     public void execute(final ArrayNode output) {
+        boolean accountFound = false;
+        Account foundAccount = null;
         for (final User user : users) {
             for (final Account account :user.getAccounts()) {
                 if (account.getAccountIBAN().equals(accountIban)) {
@@ -60,9 +63,32 @@ public class WithdrawSavingsCommand implements CommandHandler {
                                 "You do not have a classic account.", amount));
                         return;
                     }
+                    accountFound = true;
+                    foundAccount = account;
                 }
             }
         }
+        if (!accountFound) {
+            final ObjectNode outputNode = output.addObject();
+            outputNode.put("command", command);
+            outputNode.put("timestamp", timestamp);
+            final ObjectNode outputNode2 = outputNode.putObject("output");
+            outputNode2.put("description", "Account not found");
+            outputNode2.put("timestamp", timestamp);
+        }
+
+//        if (accountFound) {
+//            final double convertedAmount = currencyConverter.convert(amount, currency);
+//            final double convertedBalance = currencyConverter.convert(foundAccount.getBalance(), foundAccount.getCurrency());
+//            if (convertedAmount > convertedBalance) {
+//                foundAccount.addTransaction(new WithdrawSavingsTransaction(timestamp,
+//                        "Insufficient funds", amount));
+//                return;
+//            }
+//            foundAccount.withdraw(convertedAmount);
+//            foundAccount.addTransaction(new WithdrawSavingsTransaction(timestamp,
+//                    "Withdrawal of " + amount + " " + currency, amount));
+//        }
 
     }
 }

@@ -120,6 +120,14 @@ public final class CommandLogicFactory {
                     users,
                     currencyConverter
             );
+            case "upgradePlan" -> new UpgradePlanCommand(
+                    command.getCommand(),
+                    command.getNewPlanType(),
+                    command.getAccount(),
+                    command.getTimestamp(),
+                    users,
+                    currencyConverter
+            );
             default -> null;
         };
     }

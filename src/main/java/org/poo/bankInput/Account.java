@@ -32,6 +32,7 @@ public class Account {
     private List<Commerciant> commerciants;
     private List<Transaction> commerciantTransactions;
     private List<Transaction> transactions;
+    private String typeOfPlan;
 
     /**
      * Instantiates a new Account.
@@ -40,7 +41,7 @@ public class Account {
      * @param currency    the currency
      * @param type        the type
      */
-    public Account(final String accountIBAN, final String currency, final String type) {
+    public Account(final String accountIBAN, final String currency, final String type, final String typeOfPlan) {
         this.accountIBAN = accountIBAN;
         this.currency = currency;
         this.type = type;
@@ -50,6 +51,7 @@ public class Account {
         commerciants = new ArrayList<>();
         commerciantTransactions = new ArrayList<>();
         transactions = new ArrayList<>();
+        this.typeOfPlan = typeOfPlan;
     }
 
     /**

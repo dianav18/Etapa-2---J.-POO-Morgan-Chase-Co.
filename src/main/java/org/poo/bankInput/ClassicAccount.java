@@ -10,7 +10,7 @@ public class ClassicAccount extends Account {
      * @param iban     the iban of the account
      * @param currency the currency of the account
      */
-    public ClassicAccount(final String iban, final String currency) {
-        super(iban, currency, "classic");
+    public ClassicAccount(final String iban, final String currency, final String typeOfPlan) {
+        super(iban, currency, "classic", typeOfPlan);
     }
 }
