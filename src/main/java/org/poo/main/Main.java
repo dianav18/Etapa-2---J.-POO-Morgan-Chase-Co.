@@ -3,6 +3,7 @@ package org.poo.main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import lombok.Getter;
 import org.poo.bankInput.*;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
@@ -70,6 +71,11 @@ public final class Main {
         Checker.calculateScore();
     }
 
+    @Getter
+    private static List <Commerciant> commerciants;
+    @Getter
+    private static CurrencyConverter currencyConverter;
+
     /**
      * @param filePath1 for input file
      * @param filePath2 for output file
@@ -82,17 +88,16 @@ public final class Main {
         final File file = new File(CheckerConstants.TESTS_PATH + filePath1);
         final ObjectInput inputData = objectMapper.readValue(file, ObjectInput.class);
 
-
         final ArrayNode output = objectMapper.createArrayNode();
 
         final CommandInvoker invoker = new CommandInvoker();
         final List<User> users = UserMapper.mapToUsers(inputData.getUsers());
 
-        final List <Commerciant> commerciants = CommerciantMapper.mapToCommerciant(inputData.getCommerciants());
+        commerciants = CommerciantMapper.mapToCommerciant(inputData.getCommerciants());
 
         final List<ExchangeRate> exchangeRates
                 = ExchangeRateMapper.mapToExchangeRates(inputData.getExchangeRates());
-        final CurrencyConverter currencyConverter = new CurrencyConverter(exchangeRates);
+        currencyConverter = new CurrencyConverter(exchangeRates);
         final List<Account> accounts = AccountExtractor.extractAccountsFromUsers(users);
 
         for (final CommandInput command : inputData.getCommands()) {

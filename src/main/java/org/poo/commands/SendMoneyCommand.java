@@ -2,6 +2,7 @@ package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.bankInput.Account;
+import org.poo.bankInput.Commerciant;
 import org.poo.bankInput.SpendingThreshold;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.InsufficientFundsTransaction;
@@ -9,6 +10,7 @@ import org.poo.bankInput.transactions.ReceivedTransaction;
 import org.poo.bankInput.transactions.SentTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.handlers.CurrencyConverter;
+import org.poo.main.Main;
 
 import java.util.List;
 
@@ -116,7 +118,14 @@ public final class SendMoneyCommand implements CommandHandler {
             commission = 0;
         }
 
-        cashback = SpendingThreshold.getCashback(amount, senderAccount);
+//        for (final Commerciant checkCommerciant : Main.getCommerciants()) {
+//            if (checkCommerciant.getName().equals(commerciant)) {
+//                if(checkCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+//                    cashback = SpendingThreshold.getCashback(amount,  senderAccount);
+//                }
+//                // add cashback for nrOfTransactions
+//            }
+//        }
 
         senderAccount.setBalance(senderAccount.getBalance() - amount - commission + cashback);
         //todo Cashback-ul se va efectua pentru tranzacția curentă la

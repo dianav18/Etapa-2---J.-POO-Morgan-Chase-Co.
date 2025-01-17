@@ -1,5 +1,7 @@
 package org.poo.bankInput;
 
+import org.poo.main.Main;
+
 public class SpendingThreshold {
 //    private final Account account;
 //
@@ -8,7 +10,13 @@ public class SpendingThreshold {
 //    }
 
     public static double getCashback(final double amount, final Account account) {
-        if (account.getTotalAmountSpent() >= 500) {
+        final double checkAmount = Main.getCurrencyConverter().convert(
+                account.getTotalAmountSpent(),
+                account.getCurrency(),
+                "RON"
+        );
+
+        if (checkAmount >= 500) {
             if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
                 return 0.25 / 100 * amount;
             }
@@ -20,7 +28,7 @@ public class SpendingThreshold {
             }
         }
 
-        if (account.getTotalAmountSpent() >= 300) {
+        if (checkAmount >= 300) {
             if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
                 return 0.2 / 100 * amount;
             }
@@ -32,7 +40,7 @@ public class SpendingThreshold {
             }
         }
 
-        if (account.getTotalAmountSpent() >= 100) {
+        if (checkAmount >= 100) {
             if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
                 return 0.1 / 100 * amount;
             }

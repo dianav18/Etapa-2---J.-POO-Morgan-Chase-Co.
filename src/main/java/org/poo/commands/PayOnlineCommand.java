@@ -6,6 +6,7 @@ import org.poo.bankInput.*;
 import org.poo.bankInput.transactions.*;
 import org.poo.handlers.CommandHandler;
 import org.poo.handlers.CurrencyConverter;
+import org.poo.main.Main;
 import org.poo.utils.Utils;
 
 import java.util.List;
@@ -111,9 +112,15 @@ public final class PayOnlineCommand implements CommandHandler {
 
                             if (account.getBalance() >= finalAmount) {
                                 account.setTotalAmountSpent(account.getTotalAmountSpent() + finalAmount);
-                                cashback = SpendingThreshold.getCashback(amount, account);
-                                //todo Cashback-ul se va efectua pentru tranzacția curentă la orice comerciant
-                                // ce are tipul de cashback spendingThreshold.
+
+                                for (final Commerciant checkCommerciant : Main.getCommerciants()) {
+                                    if (checkCommerciant.getName().equals(commerciant)) {
+                                        if(checkCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+                                            cashback = SpendingThreshold.getCashback(finalAmount, account);
+                                        }
+                                        // add cashback for nrOfTransactions
+                                    }
+                                }
 
                                 account.setBalance(account.getBalance() - finalAmount - commission + cashback);
                                 boolean found = false;

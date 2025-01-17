@@ -1,6 +1,7 @@
 package org.poo.handlers;
 
 import org.poo.bankInput.Account;
+import org.poo.bankInput.Commerciant;
 import org.poo.bankInput.SpendingThreshold;
 import org.poo.bankInput.User;
 import org.poo.commands.*;
@@ -32,8 +33,7 @@ public final class CommandLogicFactory {
             final List<User> users,
             final List<Account> accounts,
             final CurrencyConverter currencyConverter
-//            final SpendingThreshold spendingThreshold
-    ) {
+            ) {
         return switch (command.getCommand()) {
             case "printTransactions" -> new PrintTransactionsCommand(
                     command.getEmail(), command.getTimestamp(), users);
