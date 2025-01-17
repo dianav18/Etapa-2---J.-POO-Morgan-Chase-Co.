@@ -96,19 +96,7 @@ public final class PayOnlineCommand implements CommandHandler {
                                 return;
                             }
 
-                            if (account.getType().equals("standard")) {
-                                commission = finalAmount * 0.002;
-                            } else if (account.getType().equals("student")) {
-                                commission = 0;
-                            } else if (account.getType().equals("silver")) {
-                                if (amount < 500) {
-                                    commission = 0;
-                                } else {
-                                    commission = finalAmount * 0.001;
-                                }
-                            } else if (account.getType().equals("gold")) {
-                                commission = 0;
-                            }
+                            commission = Commission.calculateCommission(account, finalAmount);
 
                             if (account.getBalance() >= finalAmount) {
                                 account.setTotalAmountSpent(account.getTotalAmountSpent() + finalAmount);

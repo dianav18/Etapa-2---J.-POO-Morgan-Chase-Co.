@@ -130,6 +130,15 @@ public final class CommandLogicFactory {
                     users,
                     currencyConverter
             );
+            case "cashWithdrawal" -> new CashWithdrawalCommand(
+                    command.getCommand(),
+                    command.getCardNumber(),
+                    command.getAmount(),
+                    command.getEmail(),
+                    command.getLocation(),
+                    command.getTimestamp(),
+                    users
+            );
             default -> null;
         };
     }

@@ -3,6 +3,7 @@ package org.poo.commands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bankInput.Account;
+import org.poo.bankInput.Commission;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.WithdrawSavingsTransaction;
 import org.poo.handlers.CommandHandler;
@@ -88,19 +89,7 @@ public class WithdrawSavingsCommand implements CommandHandler {
                 return;
             }
 
-            if (foundAccount.getType().equals("standard")) {
-                commission = amount * 0.002;
-            } else if (foundAccount.getType().equals("student")) {
-                commission = 0;
-            } else if (foundAccount.getType().equals("silver")) {
-                if (amount < 500) {
-                    commission = 0;
-                } else {
-                    commission = amount * 0.001;
-                }
-            } else if (foundAccount.getType().equals("gold")) {
-                commission = 0;
-            }
+            commission = Commission.calculateCommission(foundAccount, convertedAmount);
 
             foundAccount.withdraw(convertedAmount, commission);
             foundAccount.setTotalAmountSpent(foundAccount.getTotalAmountSpent() + convertedAmount);
