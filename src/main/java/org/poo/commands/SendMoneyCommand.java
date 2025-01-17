@@ -103,18 +103,19 @@ public final class SendMoneyCommand implements CommandHandler {
             }
         }
 
+        final double ronAmount = Main.getCurrencyConverter().convert(amount, senderAccount.getCurrency(), "RON");;
 
-        if (senderAccount.getType().equals("standard")) {
+        if (senderAccount.getTypeOfPlan().equals("standard")) {
             commission = amount * 0.002;
-        } else if (senderAccount.getType().equals("student")) {
+        } else if (senderAccount.getTypeOfPlan().equals("student")) {
             commission = 0;
-        } else if (senderAccount.getType().equals("silver")) {
-            if (amount < 500) {
+        } else if (senderAccount.getTypeOfPlan().equals("silver")) {
+            if (ronAmount < 500) {
                 commission = 0;
             } else {
                 commission = amount * 0.001;
             }
-        } else if (senderAccount.getType().equals("gold")) {
+        } else if (senderAccount.getTypeOfPlan().equals("gold")) {
             commission = 0;
         }
 
