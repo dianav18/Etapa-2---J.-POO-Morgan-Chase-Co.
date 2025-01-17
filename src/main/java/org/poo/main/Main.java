@@ -3,14 +3,14 @@ package org.poo.main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.bankInput.Account;
-import org.poo.bankInput.ExchangeRate;
-import org.poo.bankInput.User;
+import org.poo.bankInput.*;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.fileio.CommandInput;
+import org.poo.fileio.CommerciantInput;
 import org.poo.fileio.ObjectInput;
 import org.poo.handlers.*;
+import org.poo.handlers.mappers.CommerciantMapper;
 import org.poo.handlers.mappers.ExchangeRateMapper;
 import org.poo.handlers.mappers.UserMapper;
 import org.poo.utils.Utils;
@@ -82,10 +82,13 @@ public final class Main {
         final File file = new File(CheckerConstants.TESTS_PATH + filePath1);
         final ObjectInput inputData = objectMapper.readValue(file, ObjectInput.class);
 
+
         final ArrayNode output = objectMapper.createArrayNode();
 
         final CommandInvoker invoker = new CommandInvoker();
         final List<User> users = UserMapper.mapToUsers(inputData.getUsers());
+
+        final List <Commerciant> commerciants = CommerciantMapper.mapToCommerciant(inputData.getCommerciants());
 
         final List<ExchangeRate> exchangeRates
                 = ExchangeRateMapper.mapToExchangeRates(inputData.getExchangeRates());

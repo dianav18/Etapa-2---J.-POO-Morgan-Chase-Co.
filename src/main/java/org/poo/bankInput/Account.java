@@ -25,6 +25,7 @@ public class Account {
     private String accountIBAN;
     private String currency;
     private String type;
+    @Setter
     private double balance;
     private List<Card> cards;
     private String alias;
@@ -33,6 +34,7 @@ public class Account {
     private List<Transaction> commerciantTransactions;
     private List<Transaction> transactions;
     private String typeOfPlan;
+    private double totalAmountSpent;
 
     /**
      * Instantiates a new Account.
@@ -54,13 +56,13 @@ public class Account {
         this.typeOfPlan = typeOfPlan;
     }
 
-    public void setBalance(final double balance) {
-        this.balance = rountToTwoDecimals(balance);
-    }
+//    public void setBalance(final double balance) {
+//        this.balance = rountToTwoDecimals(balance);
+//    }
 
-    private double rountToTwoDecimals(final double value) {
-        return Math.round(value * 100.0) / 100.0;
-    }
+//    private double rountToTwoDecimals(final double value) {
+//        return Math.round(value * 100.0) / 100.0;
+//    }
 
     /**
      * Add card.
@@ -105,5 +107,9 @@ public class Account {
      */
     public void addTransaction(final Transaction transaction) {
         this.transactions.add(transaction);
+    }
+
+    public void withdraw(final double amount, final double commission) {
+        this.balance = this.balance - amount - commission;
     }
 }

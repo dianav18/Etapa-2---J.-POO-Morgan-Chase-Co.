@@ -2,6 +2,7 @@ package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.bankInput.Account;
+import org.poo.bankInput.SpendingThreshold;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.InsufficientFundsTransaction;
 import org.poo.bankInput.transactions.ReceivedTransaction;
@@ -20,6 +21,8 @@ public final class SendMoneyCommand implements CommandHandler {
     private final String receiverIBAN;
     private final int timestamp;
     private final String description;
+    private double commission;
+    private double cashback;
 
     private final List<Account> accounts;
     private final CurrencyConverter currencyConverter;
@@ -98,7 +101,28 @@ public final class SendMoneyCommand implements CommandHandler {
             }
         }
 
-        senderAccount.setBalance(senderAccount.getBalance() - amount);
+
+        if (senderAccount.getType().equals("standard")) {
+            commission = amount * 0.002;
+        } else if (senderAccount.getType().equals("student")) {
+            commission = 0;
+        } else if (senderAccount.getType().equals("silver")) {
+            if (amount < 500) {
+                commission = 0;
+            } else {
+                commission = amount * 0.001;
+            }
+        } else if (senderAccount.getType().equals("gold")) {
+            commission = 0;
+        }
+
+        cashback = SpendingThreshold.getCashback(amount, senderAccount);
+
+        senderAccount.setBalance(senderAccount.getBalance() - amount - commission + cashback);
+        //todo Cashback-ul se va efectua pentru tranzacția curentă la
+        // orice comerciant ce are tipul de cashback spendingThreshold.
+        senderAccount.setTotalAmountSpent(senderAccount.getTotalAmountSpent() + amount + commission);
+
         receiverAccount.setBalance(receiverAccount.getBalance() + convertedAmount);
 
         senderAccount.addTransaction(new SentTransaction(timestamp, description, senderIBAN,

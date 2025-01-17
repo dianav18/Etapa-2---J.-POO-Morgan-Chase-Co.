@@ -23,6 +23,8 @@ public class WithdrawSavingsCommand implements CommandHandler {
     private final List<User> users;
     private final CurrencyConverter currencyConverter;
 
+    private double commission;
+
     public WithdrawSavingsCommand(final String command, final String accountIban, final double amount,
                                   final String currency, final int timestamp, final List<User> users,
                                   final CurrencyConverter currencyConverter) {
@@ -77,18 +79,34 @@ public class WithdrawSavingsCommand implements CommandHandler {
             outputNode2.put("timestamp", timestamp);
         }
 
-//        if (accountFound) {
-//            final double convertedAmount = currencyConverter.convert(amount, currency);
-//            final double convertedBalance = currencyConverter.convert(foundAccount.getBalance(), foundAccount.getCurrency());
-//            if (convertedAmount > convertedBalance) {
-//                foundAccount.addTransaction(new WithdrawSavingsTransaction(timestamp,
-//                        "Insufficient funds", amount));
-//                return;
-//            }
-//            foundAccount.withdraw(convertedAmount);
-//            foundAccount.addTransaction(new WithdrawSavingsTransaction(timestamp,
-//                    "Withdrawal of " + amount + " " + currency, amount));
-//        }
+        if (accountFound) {
+            final double convertedAmount = currencyConverter.convert(amount, currency, foundAccount.getCurrency());
+            final double convertedBalance = currencyConverter.convert(foundAccount.getBalance(), currency, foundAccount.getCurrency());
+            if (convertedAmount > convertedBalance) {
+                foundAccount.addTransaction(new WithdrawSavingsTransaction(timestamp,
+                        "Insufficient funds", amount));
+                return;
+            }
+
+            if (foundAccount.getType().equals("standard")) {
+                commission = amount * 0.002;
+            } else if (foundAccount.getType().equals("student")) {
+                commission = 0;
+            } else if (foundAccount.getType().equals("silver")) {
+                if (amount < 500) {
+                    commission = 0;
+                } else {
+                    commission = amount * 0.001;
+                }
+            } else if (foundAccount.getType().equals("gold")) {
+                commission = 0;
+            }
+
+            foundAccount.withdraw(convertedAmount, commission);
+            foundAccount.setTotalAmountSpent(foundAccount.getTotalAmountSpent() + convertedAmount);
+            foundAccount.addTransaction(new WithdrawSavingsTransaction(timestamp,
+                    "Withdrawal of " + amount + " " + currency, amount));
+        }
 
     }
 }

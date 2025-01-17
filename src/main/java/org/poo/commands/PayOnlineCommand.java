@@ -2,10 +2,7 @@ package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.bankInput.Account;
-import org.poo.bankInput.Card;
-import org.poo.bankInput.Commerciant;
-import org.poo.bankInput.User;
+import org.poo.bankInput.*;
 import org.poo.bankInput.transactions.*;
 import org.poo.handlers.CommandHandler;
 import org.poo.handlers.CurrencyConverter;
@@ -26,6 +23,8 @@ public final class PayOnlineCommand implements CommandHandler {
     private final String email;
     private final List<User> users;
     private final CurrencyConverter currencyConverter;
+    private double commission;
+    private double cashback;
 
     /**
      * Instantiates a new Pay online command.
@@ -96,8 +95,27 @@ public final class PayOnlineCommand implements CommandHandler {
                                 return;
                             }
 
+                            if (account.getType().equals("standard")) {
+                                commission = finalAmount * 0.002;
+                            } else if (account.getType().equals("student")) {
+                                commission = 0;
+                            } else if (account.getType().equals("silver")) {
+                                if (amount < 500) {
+                                    commission = 0;
+                                } else {
+                                    commission = finalAmount * 0.001;
+                                }
+                            } else if (account.getType().equals("gold")) {
+                                commission = 0;
+                            }
+
                             if (account.getBalance() >= finalAmount) {
-                                account.setBalance(account.getBalance() - finalAmount);
+                                account.setTotalAmountSpent(account.getTotalAmountSpent() + finalAmount);
+                                cashback = SpendingThreshold.getCashback(amount, account);
+                                //todo Cashback-ul se va efectua pentru tranzacția curentă la orice comerciant
+                                // ce are tipul de cashback spendingThreshold.
+
+                                account.setBalance(account.getBalance() - finalAmount - commission + cashback);
                                 boolean found = false;
                                 for (final Commerciant userCommerciant
                                         : account.getCommerciants()) {
