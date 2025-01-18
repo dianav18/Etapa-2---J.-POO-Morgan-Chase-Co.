@@ -131,6 +131,7 @@ public final class SendMoneyCommand implements CommandHandler {
         senderAccount.setBalance(senderAccount.getBalance() - amount - commission + cashback);
         //todo Cashback-ul se va efectua pentru tranzacția curentă la
         // orice comerciant ce are tipul de cashback spendingThreshold.
+
         senderAccount.setTotalAmountSpent(senderAccount.getTotalAmountSpent() + amount + commission);
 
         receiverAccount.setBalance(receiverAccount.getBalance() + convertedAmount);

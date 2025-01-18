@@ -101,4 +101,6 @@ public interface TransactionVisitor {
     void visit(UpgradePlanTransaction upgradePlanTransaction);
 
     void visit(CashWithdrawalTransaction cashWithdrawalTransaction);
+
+    void visit(AddInterestTransaction addInterestTransaction);
 }
