@@ -1,7 +1,11 @@
 package org.poo.bankInput;
 
+import org.poo.handlers.CurrencyConverter;
+import org.poo.main.Main;
+
 public class Commission {
     public static double calculateCommission(final Account account, final double amount) {
+        final double ronAmount = Main.getCurrencyConverter().convert(amount, account.getCurrency(), "RON");
         if (account.getTypeOfPlan().equals("standard")) {
             return amount * 0.002;
         }
@@ -9,7 +13,7 @@ public class Commission {
             return 0;
         }
         if (account.getTypeOfPlan().equals("silver")) {
-            if (amount < 500) {
+            if (ronAmount < 500) {
                 return 0;
             }
             return amount * 0.001;

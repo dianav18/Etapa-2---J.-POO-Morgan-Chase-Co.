@@ -99,4 +99,6 @@ public interface TransactionVisitor {
     void visit(WithdrawSavingsTransaction withdrawSavingsTransaction);
 
     void visit(UpgradePlanTransaction upgradePlanTransaction);
+
+    void visit(CashWithdrawalTransaction cashWithdrawalTransaction);
 }

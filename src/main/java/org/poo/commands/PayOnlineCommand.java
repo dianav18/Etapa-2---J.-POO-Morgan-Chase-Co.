@@ -90,11 +90,17 @@ public final class PayOnlineCommand implements CommandHandler {
                                         account.getCurrency());
                             }
 
+                            if (finalAmount <= 0) {
+                                return;
+                            }
+
                             if (account.getBalance() < finalAmount) {
                                 account.addTransaction(new InsufficientFundsTransaction(timestamp,
                                         "Insufficient funds"));
                                 return;
                             }
+
+                            final double ronAmount = currencyConverter.convert(amount, currency, "RON"); //amount sau finalAmount??
 
                             commission = Commission.calculateCommission(account, finalAmount);
 

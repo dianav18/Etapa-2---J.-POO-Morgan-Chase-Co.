@@ -3,6 +3,7 @@ package org.poo.commands;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bankInput.*;
+import org.poo.bankInput.transactions.CashWithdrawalTransaction;
 import org.poo.bankInput.transactions.InsufficientFundsTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
@@ -43,6 +44,7 @@ public class CashWithdrawalCommand implements CommandHandler {
                             final double convertedAmount = Main.getCurrencyConverter().convert(amount, "RON", account.getCurrency());
                             commission = Commission.calculateCommission(account, convertedAmount);
                             account.setBalance(account.getBalance() - convertedAmount - commission);
+                            account.addTransaction(new CashWithdrawalTransaction(timestamp, "Cash withdrawal of " + amount, amount));
                             return;
                         }
                     }

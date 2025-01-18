@@ -162,4 +162,11 @@ public final class TransactionPrinter implements TransactionVisitor {
         node.put("newPlanType", upgradePlanTransaction.getNewPlanType());
     }
 
+    @Override
+    public void visit(final CashWithdrawalTransaction cashWithdrawalTransaction) {
+        final ObjectNode node = output.addObject();
+        node.put("description", cashWithdrawalTransaction.getDescription());
+        node.put("amount", cashWithdrawalTransaction.getAmount());
+        node.put("timestamp", cashWithdrawalTransaction.getTimestamp());
+    }
 }
