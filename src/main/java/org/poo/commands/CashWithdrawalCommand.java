@@ -1,6 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bankInput.*;
 import org.poo.bankInput.transactions.InsufficientFundsTransaction;
 import org.poo.handlers.CommandHandler;
@@ -46,8 +47,17 @@ public class CashWithdrawalCommand implements CommandHandler {
                         }
                     }
                 }
-                return;
             }
         }
+        cardNotFoundOutput(output);
+    }
+
+    private void cardNotFoundOutput(final ArrayNode output) {
+        final ObjectNode commandOutput = output.addObject();
+        commandOutput.put("command", "cashWithdrawal");
+        commandOutput.put("timestamp", timestamp);
+        final ObjectNode errorDetails = commandOutput.putObject("output");
+        errorDetails.put("description", "Card not found");
+        errorDetails.put("timestamp", timestamp);
     }
 }

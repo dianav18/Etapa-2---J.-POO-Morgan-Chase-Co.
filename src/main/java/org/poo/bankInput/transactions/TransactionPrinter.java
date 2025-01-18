@@ -161,4 +161,5 @@ public final class TransactionPrinter implements TransactionVisitor {
         node.put("accountIBAN", upgradePlanTransaction.getAccountIBAN());
         node.put("newPlanType", upgradePlanTransaction.getNewPlanType());
     }
+
 }
