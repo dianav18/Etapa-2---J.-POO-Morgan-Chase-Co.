@@ -22,8 +22,8 @@ import java.util.List;
  */
 @Getter
 @Setter
-@ToString
 public class Account {
+    private User owner;
     private String accountIBAN;
     private String currency;
     private String type;
@@ -35,7 +35,6 @@ public class Account {
     private List<Commerciant> commerciants;
     private List<Transaction> commerciantTransactions;
     private List<Transaction> transactions;
-    private String typeOfPlan;
     private double totalAmountSpent;
 
     /**
@@ -45,7 +44,8 @@ public class Account {
      * @param currency    the currency
      * @param type        the type
      */
-    public Account(final String accountIBAN, final String currency, final String type, final String typeOfPlan) {
+    public Account(final User owner, final String accountIBAN, final String currency, final String type) {
+        this.owner = owner;
         this.accountIBAN = accountIBAN;
         this.currency = currency;
         this.type = type;
@@ -55,7 +55,6 @@ public class Account {
         commerciants = new ArrayList<>();
         commerciantTransactions = new ArrayList<>();
         transactions = new ArrayList<>();
-        this.typeOfPlan = typeOfPlan;
     }
 
 //    public void setBalance(final double balance) {
@@ -113,5 +112,23 @@ public class Account {
 
     public void withdraw(final double amount, final double commission) {
         this.balance = this.balance - amount - commission;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "owner=" + owner.getEmail() +
+                ", accountIBAN='" + accountIBAN + '\'' +
+                ", currency='" + currency + '\'' +
+                ", type='" + type + '\'' +
+                ", balance=" + balance +
+                ", cards=" + cards +
+                ", alias='" + alias + '\'' +
+                ", minBalance=" + minBalance +
+                ", commerciants=" + commerciants +
+                ", commerciantTransactions=" + commerciantTransactions +
+                ", transactions=" + transactions +
+                ", totalAmountSpent=" + totalAmountSpent +
+                '}';
     }
 }

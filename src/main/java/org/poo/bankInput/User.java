@@ -23,6 +23,7 @@ public class User {
     private String Occupation;
     private List<Account> accounts;
     private List<Transaction> transactions;
+    private String plan;
 
     /**
      * Instantiates a new User.
@@ -39,6 +40,12 @@ public class User {
         this.Occupation = Occupation;
         accounts = new ArrayList<>();
         transactions = new ArrayList<>();
+
+        this.plan = "standard";
+
+        if (this.getOccupation().equals("student")) {
+            this.plan = "student";
+        }
     }
 
     /**

@@ -30,38 +30,44 @@ public class SpendingThreshold {
         account.setTotalAmountSpent(account.getTotalAmountSpent() + ronAmount);
 
         if (account.getTotalAmountSpent() >= 500) {
-            if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
-                return amount * 0.25 / 100;
-            }
-            if (account.getTypeOfPlan().equals("silver")) {
-                return amount * 0.5 / 100;
-            }
-            if (account.getTypeOfPlan().equals("gold")) {
-                return amount * 0.7 / 100;
+            switch (account.getOwner().getPlan()) {
+                case "standard", "student" -> {
+                    return amount * 0.25 / 100;
+                }
+                case "silver" -> {
+                    return amount * 0.5 / 100;
+                }
+                case "gold" -> {
+                    return amount * 0.7 / 100;
+                }
             }
         }
 
         if (account.getTotalAmountSpent() >= 300) {
-            if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
-                return amount * 0.2 / 100;
-            }
-            if (account.getTypeOfPlan().equals("silver")) {
-                return amount * 0.4 / 100;
-            }
-            if (account.getTypeOfPlan().equals("gold")) {
-                return amount * 0.55 / 100;
+            switch (account.getOwner().getPlan()) {
+                case "standard", "student" -> {
+                    return amount * 0.2 / 100;
+                }
+                case "silver" -> {
+                    return amount * 0.4 / 100;
+                }
+                case "gold" -> {
+                    return amount * 0.55 / 100;
+                }
             }
         }
 
         if (account.getTotalAmountSpent() >= 100) {
-            if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
-                return amount * 0.1 / 100;
-            }
-            if (account.getTypeOfPlan().equals("silver")) {
-                return amount * 0.3 / 100;
-            }
-            if (account.getTypeOfPlan().equals("gold")) {
-                return amount * 0.5 / 100;
+            switch (account.getOwner().getPlan()) {
+                case "standard", "student" -> {
+                    return amount * 0.1 / 100;
+                }
+                case "silver" -> {
+                    return amount * 0.3 / 100;
+                }
+                case "gold" -> {
+                    return amount * 0.5 / 100;
+                }
             }
         }
         return 0;

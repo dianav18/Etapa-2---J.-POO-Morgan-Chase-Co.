@@ -7,7 +7,7 @@ public class BusinessAccount extends Account{
      * @param accountIBAN the account iban
      * @param currency    the currency
      */
-    public BusinessAccount(final String accountIBAN, final String currency, final String typeOfPlan) {
-        super(accountIBAN, currency, "business", typeOfPlan);
+    public BusinessAccount(final User owner, final String accountIBAN, final String currency) {
+        super(owner, accountIBAN, currency, "business");
     }
 }

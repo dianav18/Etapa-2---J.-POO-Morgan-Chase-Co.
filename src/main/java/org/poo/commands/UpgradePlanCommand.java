@@ -46,7 +46,7 @@ public class UpgradePlanCommand implements CommandHandler {
                         amount = currencyConverter.convert(account.getBalance(), account.getCurrency(), "RON");
                     }
                     //TODO: Account not found
-                    final double upgradeFee = getUpgradeFee(account.getTypeOfPlan(), newPlanType);
+                    final double upgradeFee = getUpgradeFee(account.getOwner().getPlan(), newPlanType);
                     final double finalUpgradeFee;
                     finalUpgradeFee = currencyConverter.convert(upgradeFee, "RON", account.getCurrency());
                     if (upgradeFee == -1) {
@@ -58,7 +58,7 @@ public class UpgradePlanCommand implements CommandHandler {
 
                     account.setBalance(account.getBalance() - finalUpgradeFee);
                     for (final Account userAccount : user.getAccounts()) {
-                        userAccount.setTypeOfPlan(newPlanType);
+                        userAccount.getOwner().setPlan(newPlanType);
                     }
                     account.addTransaction(new UpgradePlanTransaction(accountIBAN, "Upgrade plan",
                             newPlanType, timestamp));

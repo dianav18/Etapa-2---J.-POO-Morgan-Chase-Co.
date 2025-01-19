@@ -18,8 +18,8 @@ public class SavingsAccount extends Account {
      * @param currency     the currency
      * @param interestRate the interest rate
      */
-    public SavingsAccount(final String iban, final String currency, final double interestRate, final String typeOfPlan) {
-        super(iban, currency, "savings", typeOfPlan);
+    public SavingsAccount(final User owner, final String iban, final String currency, final double interestRate) {
+        super(owner, iban, currency, "savings");
         this.interestRate = interestRate;
     }
 

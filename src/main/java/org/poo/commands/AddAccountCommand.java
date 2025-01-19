@@ -55,11 +55,11 @@ public final class AddAccountCommand implements CommandHandler {
                 }
 
                 if (accountType.equals("classic")) {
-                    newAccount = new ClassicAccount(accountIBAN, currency, typeOfPlan);
+                    newAccount = new ClassicAccount(user, accountIBAN, currency);
                 } else if (accountType.equals("savings")) {
-                    newAccount = new SavingsAccount(accountIBAN, currency, interestRate, typeOfPlan);
+                    newAccount = new SavingsAccount(user, accountIBAN, currency, interestRate);
                 } else if (accountType.equals("business")) {
-                    newAccount = new BusinessAccount(accountIBAN, currency, typeOfPlan);
+                    newAccount = new BusinessAccount(user, accountIBAN, currency);
                 } else {
                     throw new IllegalArgumentException("Invalid account type: " + accountType);
                 }

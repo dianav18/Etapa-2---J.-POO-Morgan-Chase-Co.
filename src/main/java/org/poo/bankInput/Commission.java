@@ -8,19 +8,19 @@ public class Commission {
         // ups :)
         final double ronAmount = Main.getCurrencyConverter().convert(amount, currnecy, "RON");
 
-        if (account.getTypeOfPlan().equals("standard")) {
+        if (account.getOwner().getPlan().equals("standard")) {
             return amount * 0.002;
         }
-        if (account.getTypeOfPlan().equals("student")) {
+        if (account.getOwner().getPlan().equals("student")) {
             return 0;
         }
-        if (account.getTypeOfPlan().equals("silver")) {
+        if (account.getOwner().getPlan().equals("silver")) {
             if (ronAmount < 500) {
                 return 0;
             }
             return amount * 0.001;
         }
-        if (account.getTypeOfPlan().equals("gold")) {
+        if (account.getOwner().getPlan().equals("gold")) {
             return  0;
         }
         return 0;
