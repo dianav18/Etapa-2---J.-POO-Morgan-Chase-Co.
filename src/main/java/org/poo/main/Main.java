@@ -73,6 +73,7 @@ public final class Main {
 
     @Getter
     private static List <Commerciant> commerciants;
+    private static List <User> users;
     @Getter
     private static CurrencyConverter currencyConverter;
 
@@ -91,7 +92,7 @@ public final class Main {
         final ArrayNode output = objectMapper.createArrayNode();
 
         final CommandInvoker invoker = new CommandInvoker();
-        final List<User> users = UserMapper.mapToUsers(inputData.getUsers());
+         users = UserMapper.mapToUsers(inputData.getUsers());
 
         commerciants = CommerciantMapper.mapToCommerciant(inputData.getCommerciants());
 
@@ -136,5 +137,25 @@ public final class Main {
                 file.getName()
                         .replaceAll(CheckerConstants.DIGIT_REGEX, CheckerConstants.EMPTY_STR)
         );
+    }
+
+    public static User getUser(final String email) {
+        for (final User user : users) {
+            if (user.getEmail().equals(email)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static Account getAccount(final String iban) {
+        for (final User user : users) {
+            for (final Account account : user.getAccounts()) {
+                if (account.getAccountIBAN().equals(iban)) {
+                    return account;
+                }
+            }
+        }
+        return null;
     }
 }

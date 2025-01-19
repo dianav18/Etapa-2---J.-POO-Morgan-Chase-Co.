@@ -128,6 +128,12 @@ public final class SendMoneyCommand implements CommandHandler {
 //        }
 
         commission = Commission.calculateCommission(senderAccount, amount, senderAccount.getCurrency());
+
+        if(senderAccount.getBalance() - amount - commission < 0) {
+            senderAccount.addTransaction(new InsufficientFundsTransaction(timestamp, "Insufficient funds"));
+            return;
+        }
+
         senderAccount.setBalance(senderAccount.getBalance() - amount - commission + cashback);
         //todo Cashback-ul se va efectua pentru tranzacția curentă la
         // orice comerciant ce are tipul de cashback spendingThreshold.

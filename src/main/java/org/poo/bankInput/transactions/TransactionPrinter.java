@@ -1,5 +1,6 @@
 package org.poo.bankInput.transactions;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -93,22 +94,40 @@ public final class TransactionPrinter implements TransactionVisitor {
         final ObjectNode node = output.addObject();
 
         node.put("description", String.format("Split payment of %.2f %s",
-                splitPaymentTransaction.getTotalAmount(), splitPaymentTransaction.getCurrency())); //todo
-        node.put("currency", splitPaymentTransaction.getCurrency());
+                splitPaymentTransaction.getCommand().getAmount(), splitPaymentTransaction.getCommand().getCurrency())); //todo
+        node.put("currency", splitPaymentTransaction.getCommand().getCurrency());
 
-        if (splitPaymentTransaction.isShowError()) {
+        if (splitPaymentTransaction.isError()) {
             node.put("error", "Account "
                     + splitPaymentTransaction.getProblematicAccountIBAN()
                     + " has insufficient funds for a split payment.");
         }
 
         final ArrayNode involvedAccountsNode = node.putArray("involvedAccounts");
-        for (final String account : splitPaymentTransaction.getInvolvedAccounts()) {
+        for (final String account : splitPaymentTransaction.getCommand().getAccountsForSplit()) {
             involvedAccountsNode.add(account);
         }
 
-        node.put("amount", splitPaymentTransaction.getAmountPerAccount());
-        node.put("timestamp", splitPaymentTransaction.getTimestamp());
+        if(splitPaymentTransaction.getCommand().getSplitPaymentType().equals("equal")){
+            node.put("amount", splitPaymentTransaction.getCommand().getAmount() /
+                    splitPaymentTransaction.getCommand().getAccountsForSplit().size());
+            node.put("timestamp", splitPaymentTransaction.getTimestamp());
+        }
+
+
+        if(splitPaymentTransaction.getCommand().getSplitPaymentType().equals("custom")){
+            final ArrayNode amountForUsers = node.putArray("amountForUsers");
+
+            for (final Double amountForUser : splitPaymentTransaction.getCommand().getAmountForUsers()) {
+                amountForUsers.add(amountForUser);
+            }
+
+            node.put("timestamp", splitPaymentTransaction.getTimestamp());
+        }
+
+        node.put("splitPaymentType", splitPaymentTransaction.getCommand().getSplitPaymentType());
+
+
     }
 
     @Override

@@ -12,12 +12,5 @@ public class GetUser {
         this.users = users;
     }
 
-    public User getUser() {
-        for (final User user : users) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
-        }
-        return null;
-    }
+
 }

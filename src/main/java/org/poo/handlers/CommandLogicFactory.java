@@ -84,12 +84,12 @@ public final class CommandLogicFactory {
             case "checkCardStatus" -> new CheckCardStatusCommand(command.getCardNumber(),
                     command.getTimestamp(), users);
             case "splitPayment" -> new SplitPaymentCommand(
-                    command.getAccounts(),
                     command.getTimestamp(),
                     command.getCurrency(),
                     command.getAmount(),
-                    users,
-                    currencyConverter
+                    command.getSplitPaymentType(),
+                    command.getAccounts(),
+                    command.getAmountForUsers()
             );
             case "report" -> new ReportPrintCommand(
                     command.getStartTimestamp(),
@@ -138,6 +138,11 @@ public final class CommandLogicFactory {
                     command.getLocation(),
                     command.getTimestamp(),
                     users
+            );
+            case "acceptSplitPayment" -> new AcceptSplitPaymentCommand(
+                    command.getTimestamp(),
+                    command.getEmail(),
+                    command.getSplitPaymentType()
             );
             default -> null;
         };
