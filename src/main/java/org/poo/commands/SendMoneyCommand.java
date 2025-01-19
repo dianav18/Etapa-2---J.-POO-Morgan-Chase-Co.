@@ -127,12 +127,13 @@ public final class SendMoneyCommand implements CommandHandler {
 //            }
 //        }
 
-        commission = Commission.calculateCommission(senderAccount, amount);
+        commission = Commission.calculateCommission(senderAccount, amount, senderAccount.getCurrency());
         senderAccount.setBalance(senderAccount.getBalance() - amount - commission + cashback);
         //todo Cashback-ul se va efectua pentru tranzacția curentă la
         // orice comerciant ce are tipul de cashback spendingThreshold.
 
-        senderAccount.setTotalAmountSpent(senderAccount.getTotalAmountSpent() + amount + commission);
+        final double ronAmount = Main.getCurrencyConverter().convert(amount, senderAccount.getCurrency(), "RON");
+        senderAccount.setTotalAmountSpent(senderAccount.getTotalAmountSpent() + ronAmount);
 
         receiverAccount.setBalance(receiverAccount.getBalance() + convertedAmount);
 

@@ -86,40 +86,30 @@ public final class PayOnlineCommand implements CommandHandler {
                             double finalAmount = amount;
 
                             if (!currency.equals(account.getCurrency())) {
-                                finalAmount = currencyConverter.convert(amount, currency,
-                                        account.getCurrency());
+                                finalAmount = currencyConverter.convert(amount, currency, account.getCurrency());
                             }
 
                             if (finalAmount <= 0) {
                                 return;
                             }
 
-                            if (account.getBalance() < finalAmount) {
-                                account.addTransaction(new InsufficientFundsTransaction(timestamp,
-                                        "Insufficient funds"));
+                            commission = Commission.calculateCommission(account, finalAmount, account.getCurrency());
+
+                            if (account.getBalance() < (finalAmount + commission)) {
+                                account.addTransaction(new InsufficientFundsTransaction(timestamp, "Insufficient funds"));
                                 return;
                             }
 
-                            final double ronAmount = currencyConverter.convert(amount, currency, "RON"); //amount sau finalAmount??
+                            cashback = Cashback.calculateByCommerciantName(finalAmount, account.getCurrency(), account, commerciant);
 
-                            commission = Commission.calculateCommission(account, finalAmount);
 
-                            if (account.getBalance() >= finalAmount) {
-                                account.setTotalAmountSpent(account.getTotalAmountSpent() + finalAmount);
+                            System.out.println("Paying     :" + finalAmount);
+                            System.out.println("Commission :" + commission);
+                            System.out.println("Cashback   :" + cashback);
 
-                                for (final Commerciant checkCommerciant : Main.getCommerciants()) {
-                                    if (checkCommerciant.getName().equals(commerciant)) {
-                                        if(checkCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                                            cashback = SpendingThreshold.getCashback(finalAmount, account);
-                                        }
-                                        // add cashback for nrOfTransactions
-                                    }
-                                }
-
-                                account.setBalance(account.getBalance() - finalAmount - commission + cashback);
+                            account.setBalance(account.getBalance() - finalAmount - commission + cashback);
                                 boolean found = false;
-                                for (final Commerciant userCommerciant
-                                        : account.getCommerciants()) {
+                                for (final Commerciant userCommerciant : account.getCommerciants()) {
                                     if (userCommerciant.getName().equalsIgnoreCase(commerciant)) {
                                         userCommerciant.addSpentAmount(finalAmount);
                                         found = true;
@@ -127,28 +117,28 @@ public final class PayOnlineCommand implements CommandHandler {
                                     }
                                 }
 
-                                if (!found) {
-                                    final Commerciant newCommerciant = new Commerciant.Builder(commerciant).build();
-                                    newCommerciant.addSpentAmount(finalAmount);
-                                    account.addCommerciant(newCommerciant);
-                                    account.addCommerciantTransaction(new CommerciantTransaction(
-                                            newCommerciant.getName(), finalAmount, timestamp));
-                                }
-                                account.addTransaction(new CardPaymentTransaction(
-                                        timestamp, description,
-                                        finalAmount, commerciant));
-                                if (card.isOneTime()) {
-                                    account.addTransaction(new CardDestroyedTransaction(timestamp,
-                                            "Card destroyed", account.getAccountIBAN(),
-                                            card.getCardNumber(), user.getEmail()));
-                                    account.removeCard(card);
-                                    final Card newCard = new Card(Utils.generateCardNumber(), true);
-                                    account.addCard(newCard);
-                                    account.addTransaction(new CardCreatedTransaction(timestamp,
-                                            account.getAccountIBAN(), newCard.getCardNumber(),
-                                            user.getEmail()));
-                                }
-                                return;
+                            account.addCommerciantTransaction(new CommerciantTransaction(commerciant, finalAmount, timestamp));
+
+                            if (!found) {
+                                final Commerciant newCommerciant = new Commerciant.Builder(commerciant).build();
+                                newCommerciant.addSpentAmount(finalAmount);
+                                account.addCommerciant(newCommerciant);
+                            }
+
+                            account.addTransaction(new CardPaymentTransaction(
+                                    timestamp, description,
+                                    finalAmount, commerciant));
+
+                            if (card.isOneTime()) {
+                                account.addTransaction(new CardDestroyedTransaction(timestamp,
+                                        "Card destroyed", account.getAccountIBAN(),
+                                        card.getCardNumber(), user.getEmail()));
+                                account.removeCard(card);
+                                final Card newCard = new Card(Utils.generateCardNumber(), true);
+                                account.addCard(newCard);
+                                account.addTransaction(new CardCreatedTransaction(timestamp,
+                                        account.getAccountIBAN(), newCard.getCardNumber(),
+                                        user.getEmail()));
                             }
                         }
                     }

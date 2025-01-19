@@ -108,6 +108,17 @@ public final class Main {
                 invoker.addCommand(commandInstance);
                 invoker.executeCommands(output);
             }
+
+            System.out.println(command.getTimestamp());
+
+            for (final User user : users) {
+                System.out.println(user);
+            }
+
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
         }
 
         final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();

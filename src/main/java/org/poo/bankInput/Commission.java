@@ -4,8 +4,10 @@ import org.poo.handlers.CurrencyConverter;
 import org.poo.main.Main;
 
 public class Commission {
-    public static double calculateCommission(final Account account, final double amount) {
-        final double ronAmount = Main.getCurrencyConverter().convert(amount, account.getCurrency(), "RON");
+    public static double calculateCommission(final Account account, final double amount, final String currnecy) {
+        // ups :)
+        final double ronAmount = Main.getCurrencyConverter().convert(amount, currnecy, "RON");
+
         if (account.getTypeOfPlan().equals("standard")) {
             return amount * 0.002;
         }

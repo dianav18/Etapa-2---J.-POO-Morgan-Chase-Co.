@@ -48,15 +48,14 @@ public class UpgradePlanCommand implements CommandHandler {
                     //TODO: Account not found
                     final double upgradeFee = getUpgradeFee(account.getTypeOfPlan(), newPlanType);
                     final double finalUpgradeFee;
-                    if (account.getCurrency().equals("RON")) {
-                        finalUpgradeFee = upgradeFee;
-                    } else {
-                        finalUpgradeFee = currencyConverter.convert(upgradeFee, "RON", account.getCurrency());
-                    }
+                    finalUpgradeFee = currencyConverter.convert(upgradeFee, "RON", account.getCurrency());
                     if (upgradeFee == -1) {
                         //TODO: You cannot downgrade your plan.
                         return;
                     }
+
+                    // TODO check if the user has enought money
+
                     account.setBalance(account.getBalance() - finalUpgradeFee);
                     for (final Account userAccount : user.getAccounts()) {
                         userAccount.setTypeOfPlan(newPlanType);

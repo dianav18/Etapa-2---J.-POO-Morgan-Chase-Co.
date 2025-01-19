@@ -89,7 +89,7 @@ public class WithdrawSavingsCommand implements CommandHandler {
                 return;
             }
 
-            commission = Commission.calculateCommission(foundAccount, convertedAmount);
+            commission = Commission.calculateCommission(foundAccount, convertedAmount, foundAccount.getCurrency());
 
             foundAccount.withdraw(convertedAmount, commission);
             foundAccount.setTotalAmountSpent(foundAccount.getTotalAmountSpent() + convertedAmount);

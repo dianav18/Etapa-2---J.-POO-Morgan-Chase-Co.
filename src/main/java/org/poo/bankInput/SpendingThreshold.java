@@ -9,16 +9,29 @@ public class SpendingThreshold {
 //        this.account = account;
 //    }
 
-    public static double getCashback(final double amount, final Account account) {
-        final double checkAmount = Main.getCurrencyConverter().convert(
-                account.getTotalAmountSpent(),
-                account.getCurrency(),
-                "RON"
-        );
+    public static double checkForByCommerciantName(final double amount, final String currency, final Account account, final String commerciantName){
+        for (final Commerciant checkCommerciant : Main.getCommerciants()) {
+            if (checkCommerciant.getName().equals(commerciantName)) {
+                if (checkCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
+                    return SpendingThreshold.getCashback(amount, currency, account);
+                }
+            }
+        }
 
-        if (checkAmount >= 500) {
+        return 0;
+    }
+
+    public static double checkForByCommerciantIBAN(final double amount, final String currency, final Account account, final String commerciantIBAN){
+        return 0; // TODO for later
+    }
+
+    public static double getCashback(final double amount, final String currency, final Account account) {
+        final double ronAmount = Main.getCurrencyConverter().convert(amount, currency, "RON");
+        account.setTotalAmountSpent(account.getTotalAmountSpent() + ronAmount);
+
+        if (account.getTotalAmountSpent() >= 500) {
             if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
-                return 0.25 / 100 * amount;
+                return amount * 0.25 / 100;
             }
             if (account.getTypeOfPlan().equals("silver")) {
                 return amount * 0.5 / 100;
@@ -28,9 +41,9 @@ public class SpendingThreshold {
             }
         }
 
-        if (checkAmount >= 300) {
+        if (account.getTotalAmountSpent() >= 300) {
             if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
-                return 0.2 / 100 * amount;
+                return amount * 0.2 / 100;
             }
             if (account.getTypeOfPlan().equals("silver")) {
                 return amount * 0.4 / 100;
@@ -40,9 +53,9 @@ public class SpendingThreshold {
             }
         }
 
-        if (checkAmount >= 100) {
+        if (account.getTotalAmountSpent() >= 100) {
             if (account.getTypeOfPlan().equals("standard") || account.getTypeOfPlan().equals("student")) {
-                return 0.1 / 100 * amount;
+                return amount * 0.1 / 100;
             }
             if (account.getTypeOfPlan().equals("silver")) {
                 return amount * 0.3 / 100;

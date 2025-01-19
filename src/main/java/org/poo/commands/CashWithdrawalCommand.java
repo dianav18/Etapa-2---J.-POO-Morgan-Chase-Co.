@@ -7,6 +7,7 @@ import org.poo.bankInput.transactions.CashWithdrawalTransaction;
 import org.poo.bankInput.transactions.InsufficientFundsTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
+import org.poo.utils.Utils;
 
 import java.util.List;
 
@@ -41,10 +42,17 @@ public class CashWithdrawalCommand implements CommandHandler {
                                 account.addTransaction(new InsufficientFundsTransaction(timestamp, "Insufficient funds"));
                                 return;
                             }
+
                             final double convertedAmount = Main.getCurrencyConverter().convert(amount, "RON", account.getCurrency());
-                            commission = Commission.calculateCommission(account, convertedAmount);
+                            commission = Commission.calculateCommission(account, convertedAmount, account.getCurrency());
                             account.setBalance(account.getBalance() - convertedAmount - commission);
                             account.addTransaction(new CashWithdrawalTransaction(timestamp, "Cash withdrawal of " + amount, amount));
+
+//                            if (card.isOneTime()) {
+//                                account.removeCard(card);
+//                                final Card newCard = new Card(Utils.generateCardNumber(), true);
+//                                account.addCard(newCard);
+//                            }
                             return;
                         }
                     }
