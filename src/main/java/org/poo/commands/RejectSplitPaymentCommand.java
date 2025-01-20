@@ -13,7 +13,7 @@ import org.poo.main.Main;
  * which is used to split a payment between multiple accounts.
  */
 @AllArgsConstructor
-public final class AcceptSplitPaymentCommand implements CommandHandler {
+public final class RejectSplitPaymentCommand implements CommandHandler {
 
     private final int timestamp;
     private final String email;
@@ -25,7 +25,7 @@ public final class AcceptSplitPaymentCommand implements CommandHandler {
         final User user = Main.getUser(email);
 
         if (user == null) {
-            Utils.userNotFound(output, "acceptSplitPayment");
+            Utils.userNotFound(output, "rejectSplitPayment");
             return;
         }
 
@@ -33,7 +33,7 @@ public final class AcceptSplitPaymentCommand implements CommandHandler {
             if (splitPayment.getSplitPaymentType().equals(splitPaymentType)) {
                 for (final Account account : user.getAccounts()) {
                     if (splitPayment.getAccountsForSplit().contains(account.getAccountIBAN())) {
-                        splitPayment.accept(email, output);
+                        splitPayment.reject(email, output);
                         return;
                     }
                 }

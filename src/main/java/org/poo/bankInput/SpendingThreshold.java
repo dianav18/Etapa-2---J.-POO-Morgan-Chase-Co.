@@ -3,26 +3,22 @@ package org.poo.bankInput;
 import org.poo.main.Main;
 
 public class SpendingThreshold {
-//    private final Account account;
-//
-//    public SpendingThreshold(final Account account) {
-//        this.account = account;
-//    }
 
-    public static double checkForByCommerciantName(final double amount, final String currency, final Account account, final String commerciantName){
-        for (final Commerciant checkCommerciant : Main.getCommerciants()) {
-            if (checkCommerciant.getName().equals(commerciantName)) {
-                if (checkCommerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                    return SpendingThreshold.getCashback(amount, currency, account);
-                }
-            }
+
+    public static double checkFor(final double amount, final String currency, final Account account, final String commerciantID) {
+        double cashback = 0;
+
+        Commerciant commerciant = Main.getCommerciant(commerciantID);
+
+        if (commerciant == null) {
+            return cashback;
         }
 
-        return 0;
-    }
+        if (commerciant.getCashbackStrategy().equals("spendingThreshold")) {
+            cashback = SpendingThreshold.getCashback(amount, currency, account);
+        }
 
-    public static double checkForByCommerciantIBAN(final double amount, final String currency, final Account account, final String commerciantIBAN){
-        return 0; // TODO for later
+        return cashback + NumberOfTransactionsCashback.getExistent(amount, currency, account, commerciant);
     }
 
     public static double getCashback(final double amount, final String currency, final Account account) {

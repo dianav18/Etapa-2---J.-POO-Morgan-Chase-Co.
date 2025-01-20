@@ -21,8 +21,8 @@ public final class DoubleDeserializer extends JsonDeserializer<Double> {
     public Double deserialize(
             final JsonParser p,
             final DeserializationContext context) throws IOException {
-        var valueAsString = p.getValueAsString();
-        var sides = valueAsString.split(SEPARATOR);
+        final var valueAsString = p.getValueAsString();
+        final var sides = valueAsString.split(SEPARATOR);
 
         if (sides.length < HAS_TWO_SIDES) {
             return Double.valueOf(valueAsString);

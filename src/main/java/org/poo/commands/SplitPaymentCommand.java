@@ -39,7 +39,16 @@ public final class SplitPaymentCommand implements CommandHandler {
     }
 
     public void reject(final String email, final ArrayNode output) {
-        // TODO
+        for (String accountIBAN : accountsForSplit) {
+            final Account account = Main.getAccount(accountIBAN);
+
+            if(account==null){
+                continue;
+            }
+
+            account.addTransaction(new SplitPaymentTransaction(this, false, null, true));
+        }
+
         ACTIVE_SPLIT_PAYMENTS.remove(this);
     }
 
@@ -52,6 +61,8 @@ public final class SplitPaymentCommand implements CommandHandler {
     }
 
     public void finalizePayment(final ArrayNode output) {
+        ACTIVE_SPLIT_PAYMENTS.remove(this);
+
         boolean hasError = false;
         String problematicAccountIBAN = null;
 
@@ -60,7 +71,7 @@ public final class SplitPaymentCommand implements CommandHandler {
 
             if (account == null) {
                 // todo error
-                return;
+                continue;
             }
 
             final double amountInAccountCurrency = Main.getCurrencyConverter().convert(getPart(accountIBAN), currency, account.getCurrency());
@@ -68,6 +79,7 @@ public final class SplitPaymentCommand implements CommandHandler {
             if (account.getBalance() < amountInAccountCurrency) {
                 problematicAccountIBAN = accountIBAN;
                 hasError = true;
+                break;
             }
         }
 
@@ -77,11 +89,12 @@ public final class SplitPaymentCommand implements CommandHandler {
 
                 if (account == null) {
                     // todo error
-                    return;
+                    continue;
                 }
 
-                account.addTransaction(new SplitPaymentTransaction(this, hasError, problematicAccountIBAN));
+                account.addTransaction(new SplitPaymentTransaction(this, hasError, problematicAccountIBAN, false));
             }
+            return;
         }
 
         for (final String accountIBAN : accountsForSplit) {
@@ -89,12 +102,13 @@ public final class SplitPaymentCommand implements CommandHandler {
 
             if (account == null) {
                 // todo error
-                return;
+                continue;
             }
+
             final double amountInAccountCurrency = Main.getCurrencyConverter().convert(getPart(accountIBAN), currency, account.getCurrency());
 
-            account.setBalance(account.getBalance() - amountInAccountCurrency);
-            account.addTransaction(new SplitPaymentTransaction(this, hasError, problematicAccountIBAN));
+            account.removeBalance(account.getOwner(), amountInAccountCurrency, 0, 0);
+            account.addTransaction(new SplitPaymentTransaction(this, hasError, problematicAccountIBAN,false));
         }
     }
 

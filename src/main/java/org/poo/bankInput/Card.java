@@ -9,6 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Card {
+
+    private Account account;
     private String cardNumber;
     private String status;
     private boolean isOneTime;
@@ -19,7 +21,8 @@ public class Card {
      * @param cardNumber the card number
      * @param isOneTime  the is one time
      */
-    public Card(final String cardNumber, final boolean isOneTime) {
+    public Card(Account account, final String cardNumber, final boolean isOneTime) {
+        this.account = account;
         this.cardNumber = cardNumber;
         this.status = "active";
         this.isOneTime = isOneTime;

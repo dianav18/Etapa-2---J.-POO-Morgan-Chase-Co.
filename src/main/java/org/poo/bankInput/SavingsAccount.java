@@ -23,15 +23,17 @@ public class SavingsAccount extends Account {
         this.interestRate = interestRate;
     }
 
+    public void setInterestRate(final double interestRate) {
+        this.interestRate = interestRate;
+    }
+
     /**
      * Add interest.
      *
      * @param additionalInterestRate the additional interest rate
      */
     public void addInterest(final double additionalInterestRate) {
-//        this.interestRate += additionalInterestRate; // uite aici
-        // sunt prost, eu creseteam interest rate in loc de balance
-        this.setBalance(this.getBalance() + this.getBalance() * interestRate);
+        addBalance(null, this.getBalance() * interestRate, this.getCurrency());
     }
 
 }

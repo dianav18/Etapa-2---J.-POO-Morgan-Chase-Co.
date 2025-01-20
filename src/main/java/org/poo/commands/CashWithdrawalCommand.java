@@ -2,64 +2,48 @@ package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.bankInput.*;
+import lombok.AllArgsConstructor;
+import org.poo.Utils;
+import org.poo.bankInput.Account;
+import org.poo.bankInput.Card;
+import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.CashWithdrawalTransaction;
 import org.poo.bankInput.transactions.InsufficientFundsTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
-import org.poo.utils.Utils;
 
-import java.util.List;
-
+@AllArgsConstructor
 public class CashWithdrawalCommand implements CommandHandler {
-    private final String command;
+
     private final String cardNumber;
     private final double amount;
     private final String email;
-    private final String location;
     private final int timestamp;
-    private final List<User> users;
-    private double commission;
-
-    public CashWithdrawalCommand(final String command, final String cardNumber, final double amount, final String email, final String location, final int timestamp, final List<User> users) {
-        this.command = command;
-        this.cardNumber = cardNumber;
-        this.amount = amount;
-        this.email = email;
-        this.location = location;
-        this.timestamp = timestamp;
-        this.users = users;
-    }
 
     @Override
     public void execute(final ArrayNode output) {
-        for (final User user : users) {
-            if (user.getEmail().equals(email)) {
-                for (final Account account : user.getAccounts()) {
-                    for (final Card card : account.getCards()) {
-                        if (card.getCardNumber().equals(cardNumber)) {
-                            if (account.getBalance() < amount) {
-                                account.addTransaction(new InsufficientFundsTransaction(timestamp, "Insufficient funds"));
-                                return;
-                            }
+        User user = Main.getUser(email);
 
-                            final double convertedAmount = Main.getCurrencyConverter().convert(amount, "RON", account.getCurrency());
-                            commission = Commission.calculateCommission(account, convertedAmount, account.getCurrency());
-                            account.setBalance(account.getBalance() - convertedAmount - commission);
-                            account.addTransaction(new CashWithdrawalTransaction(timestamp, "Cash withdrawal of " + amount, amount));
-
-//                            if (card.isOneTime()) {
-//                                account.removeCard(card);
-//                                final Card newCard = new Card(Utils.generateCardNumber(), true);
-//                                account.addCard(newCard);
-//                            }
-                            return;
-                        }
-                    }
-                }
-            }
+        if (user == null) {
+            Utils.userNotFound(output, "cashWithdrawal");
+            return;
         }
-        cardNotFoundOutput(output);
+
+        Card card = Main.getCard(user, cardNumber);
+
+        if (card == null) {
+            Utils.cardNotFound(output, "cashWithdrawal");
+            return;
+        }
+
+        Account account = card.getAccount();
+
+        if (!account.removeBalance(user, amount, "RON", null)) {
+            account.addTransaction(new InsufficientFundsTransaction(timestamp));
+            return;
+        }
+
+        account.addTransaction(new CashWithdrawalTransaction(timestamp, "Cash withdrawal of " + amount, amount));
     }
 
     private void cardNotFoundOutput(final ArrayNode output) {

@@ -7,8 +7,8 @@ import lombok.Getter;
 import org.poo.bankInput.*;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
+import org.poo.commands.SplitPaymentCommand;
 import org.poo.fileio.CommandInput;
-import org.poo.fileio.CommerciantInput;
 import org.poo.fileio.ObjectInput;
 import org.poo.handlers.*;
 import org.poo.handlers.mappers.CommerciantMapper;
@@ -39,6 +39,7 @@ public final class Main {
     /**
      * DO NOT MODIFY MAIN METHOD
      * Call the checker
+     *
      * @param args from command line
      * @throws IOException in case of exceptions to reading / writing
      */
@@ -72,10 +73,13 @@ public final class Main {
     }
 
     @Getter
-    private static List <Commerciant> commerciants;
-    private static List <User> users;
+    private static List<Commerciant> commerciants;
+    @Getter
+    private static List<User> users;
     @Getter
     private static CurrencyConverter currencyConverter;
+    @Getter
+    private static int timestamp;
 
     /**
      * @param filePath1 for input file
@@ -85,6 +89,9 @@ public final class Main {
     public static void action(final String filePath1,
                               final String filePath2) throws IOException {
         Utils.resetRandom();
+        SplitPaymentCommand.ACTIVE_SPLIT_PAYMENTS.clear();
+        NumberOfTransactionsCashback.REDEEMED.clear();
+
         final ObjectMapper objectMapper = new ObjectMapper();
         final File file = new File(CheckerConstants.TESTS_PATH + filePath1);
         final ObjectInput inputData = objectMapper.readValue(file, ObjectInput.class);
@@ -92,34 +99,34 @@ public final class Main {
         final ArrayNode output = objectMapper.createArrayNode();
 
         final CommandInvoker invoker = new CommandInvoker();
-         users = UserMapper.mapToUsers(inputData.getUsers());
+        users = UserMapper.mapToUsers(inputData.getUsers());
 
         commerciants = CommerciantMapper.mapToCommerciant(inputData.getCommerciants());
 
-        final List<ExchangeRate> exchangeRates
-                = ExchangeRateMapper.mapToExchangeRates(inputData.getExchangeRates());
+        final List<ExchangeRate> exchangeRates = ExchangeRateMapper.mapToExchangeRates(inputData.getExchangeRates());
         currencyConverter = new CurrencyConverter(exchangeRates);
         final List<Account> accounts = AccountExtractor.extractAccountsFromUsers(users);
 
         for (final CommandInput command : inputData.getCommands()) {
-            final CommandHandler commandInstance
-                    = CommandLogicFactory.getCommandLogic(
-                    command, users, accounts, currencyConverter);
+            final CommandHandler commandInstance = CommandLogicFactory.getCommandLogic(command, users, accounts, currencyConverter);
             if (commandInstance != null) {
+                timestamp = command.getTimestamp();
                 invoker.addCommand(commandInstance);
                 invoker.executeCommands(output);
             }
 
-            System.out.println(command.getTimestamp());
-
             for (final User user : users) {
-                System.out.println(user);
+//                System.out.println(user);
+                if (user.toString().contains("RO58POOB7344468893732422")) {
+                    System.out.println("[" + command.getTimestamp() + "] " + user);
+                    break;
+                }
             }
 
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
         }
 
         final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
@@ -151,11 +158,38 @@ public final class Main {
     public static Account getAccount(final String iban) {
         for (final User user : users) {
             for (final Account account : user.getAccounts()) {
-                if (account.getAccountIBAN().equals(iban)) {
+                if (account.getAccountIBAN().equals(iban) || account.getAlias().equals(iban)) {
                     return account;
                 }
             }
         }
+        return null;
+    }
+
+    public static Card getCard(User user, final String cardNumber) {
+        for (final User checkUser : users) {
+            for (final Account account : checkUser.getAccounts()) {
+                for (User accountUser : account.getUsers()) {
+                    if (accountUser.getEmail().equals(user.getEmail())) {
+                        for (final Card card : account.getCards()) {
+                            if (card.getCardNumber().equals(cardNumber)) {
+                                return card;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Commerciant getCommerciant(String commerciant) {
+        for (Commerciant checkCommerciant : commerciants) {
+            if (checkCommerciant.getCommerciantIBAN().equals(commerciant) || checkCommerciant.getName().equals(commerciant)) {
+                return checkCommerciant;
+            }
+        }
+
         return null;
     }
 }

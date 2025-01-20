@@ -46,16 +46,22 @@ public final class CommandLogicFactory {
                     command.getTimestamp(),
                     users
             );
-            case "addFunds" -> new AddFundsCommand(command.getAccount(),
-                    command.getAmount(), command.getTimestamp(), users);
+            case "addFunds" -> new AddFundsCommand(
+                    command.getEmail(),
+                    command.getAccount(),
+                    command.getAmount(),
+                    command.getTimestamp()
+            );
             case "createCard" -> new AddCardsCommand(command.getAccount(),
                     command.getEmail(), false, command.getTimestamp(), users);
             case "createOneTimeCard" -> new AddCardsCommand(command.getAccount(),
                     command.getEmail(), true, command.getTimestamp(), users);
             case "deleteAccount" -> new DeleteAccountCommand(command.getAccount(),
                     command.getTimestamp(), command.getEmail(), users);
-            case "deleteCard" -> new DeleteCardCommand(command.getCardNumber(),
-                    command.getTimestamp(), users);
+            case "deleteCard" -> new DeleteCardCommand(
+                    command.getCardNumber(),
+                    command.getTimestamp()
+            );
             case "payOnline" -> new PayOnlineCommand(
                     command.getCardNumber(),
                     command.getAmount(),
@@ -63,19 +69,14 @@ public final class CommandLogicFactory {
                     command.getTimestamp(),
                     command.getDescription(),
                     command.getCommerciant(),
-                    command.getEmail(),
-                    users,
-                    currencyConverter
+                    command.getEmail()
             );
             case "sendMoney" -> new SendMoneyCommand(
                     command.getAccount(),
-                    command.getAmount(),
                     command.getReceiver(),
+                    command.getAmount(),
                     command.getTimestamp(),
-                    command.getDescription(),
-                    accounts,
-                    currencyConverter,
-                    users
+                    command.getDescription()
             );
             case "setAlias" -> new SetAliasCommand(command.getEmail(),
                     command.getAlias(), command.getAccount(), users);
@@ -114,37 +115,61 @@ public final class CommandLogicFactory {
                     users
             );
             case "withdrawSavings" -> new WithdrawSavingsCommand(
-                    "withdrawSavings",
                     command.getAccount(),
                     command.getAmount(),
                     command.getCurrency(),
-                    command.getTimestamp(),
-                    users,
-                    currencyConverter
+                    command.getTimestamp()
             );
             case "upgradePlan" -> new UpgradePlanCommand(
-                    command.getCommand(),
                     command.getNewPlanType(),
                     command.getAccount(),
-                    command.getTimestamp(),
-                    users,
-                    currencyConverter
+                    command.getTimestamp()
             );
             case "cashWithdrawal" -> new CashWithdrawalCommand(
-                    command.getCommand(),
                     command.getCardNumber(),
                     command.getAmount(),
                     command.getEmail(),
-                    command.getLocation(),
-                    command.getTimestamp(),
-                    users
+                    command.getTimestamp()
             );
             case "acceptSplitPayment" -> new AcceptSplitPaymentCommand(
                     command.getTimestamp(),
                     command.getEmail(),
                     command.getSplitPaymentType()
             );
-            default -> null;
+            case "addNewBusinessAssociate" -> new AddNewBusinessAssociateCommand(
+                    command.getTimestamp(),
+                    command.getAccount(),
+                    command.getEmail(),
+                    command.getRole()
+            );
+            case "businessReport" -> new BusinessReportCommand(
+                    command.getStartTimestamp(),
+                    command.getEndTimestamp(),
+                    command.getAccount(),
+                    command.getType(),
+                    command.getTimestamp()
+            );
+            case "changeSpendingLimit" -> new ChangeSpendingLimitCommand(
+                    command.getEmail(),
+                    command.getAccount(),
+                    command.getAmount(),
+                    command.getTimestamp()
+            );
+            case "changeDepositLimit" -> new ChangeDepositLimitCommand(
+                    command.getEmail(),
+                    command.getAccount(),
+                    command.getAmount(),
+                    command.getTimestamp()
+            );
+            case "rejectSplitPayment" -> new RejectSplitPaymentCommand(
+                    command.getTimestamp(),
+                    command.getEmail(),
+                    command.getSplitPaymentType()
+            );
+            default -> {
+                System.out.println("Invalid command " + command.getCommand());
+                yield null;
+            }
         };
     }
 }

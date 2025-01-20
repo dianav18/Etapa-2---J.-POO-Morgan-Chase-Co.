@@ -1,6 +1,5 @@
 package org.poo.bankInput.transactions;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -108,14 +107,14 @@ public final class TransactionPrinter implements TransactionVisitor {
             involvedAccountsNode.add(account);
         }
 
-        if(splitPaymentTransaction.getCommand().getSplitPaymentType().equals("equal")){
+        if (splitPaymentTransaction.getCommand().getSplitPaymentType().equals("equal")) {
             node.put("amount", splitPaymentTransaction.getCommand().getAmount() /
                     splitPaymentTransaction.getCommand().getAccountsForSplit().size());
             node.put("timestamp", splitPaymentTransaction.getTimestamp());
         }
 
 
-        if(splitPaymentTransaction.getCommand().getSplitPaymentType().equals("custom")){
+        if (splitPaymentTransaction.getCommand().getSplitPaymentType().equals("custom")) {
             final ArrayNode amountForUsers = node.putArray("amountForUsers");
 
             for (final Double amountForUser : splitPaymentTransaction.getCommand().getAmountForUsers()) {
@@ -127,7 +126,9 @@ public final class TransactionPrinter implements TransactionVisitor {
 
         node.put("splitPaymentType", splitPaymentTransaction.getCommand().getSplitPaymentType());
 
-
+        if (splitPaymentTransaction.isRejected()) {
+            node.put("error", "One user rejected the payment.");
+        }
     }
 
     @Override
@@ -141,14 +142,14 @@ public final class TransactionPrinter implements TransactionVisitor {
 
     @Override
     public void visit(final ReceivedTransaction receivedTransaction) {
-            final ObjectNode node = output.addObject();
-            node.put("description", receivedTransaction.getDescription());
-            node.put("amount", receivedTransaction.getAmount()
-                    + " " + receivedTransaction.getCurrency());
-            node.put("senderIBAN", receivedTransaction.getSenderIBAN());
-            node.put("receiverIBAN", receivedTransaction.getReceiverIBAN());
-            node.put("timestamp", receivedTransaction.getTimestamp());
-            node.put("transferType", "received");
+        final ObjectNode node = output.addObject();
+        node.put("description", receivedTransaction.getDescription());
+        node.put("amount", receivedTransaction.getAmount()
+                + " " + receivedTransaction.getCurrency());
+        node.put("senderIBAN", receivedTransaction.getSenderIBAN());
+        node.put("receiverIBAN", receivedTransaction.getReceiverIBAN());
+        node.put("timestamp", receivedTransaction.getTimestamp());
+        node.put("transferType", "received");
     }
 
     @Override
@@ -170,6 +171,9 @@ public final class TransactionPrinter implements TransactionVisitor {
         final ObjectNode node = output.addObject();
         node.put("description", withdrawSavingsTransaction.getDescription());
         node.put("timestamp", withdrawSavingsTransaction.getTimestamp());
+        node.put("amount", withdrawSavingsTransaction.getAmount());
+        node.put("classicAccountIBAN", withdrawSavingsTransaction.getClassicAccountIBAN());
+        node.put("savingsAccountIBAN", withdrawSavingsTransaction.getSavingsAccountIBAN());
     }
 
     @Override
@@ -196,5 +200,26 @@ public final class TransactionPrinter implements TransactionVisitor {
         node.put("amount", addInterestTransaction.getAmount());
         node.put("currency", addInterestTransaction.getCurrency());
         node.put("timestamp", addInterestTransaction.getTimestamp());
+    }
+
+    @Override
+    public void visit(NoClassicAccountTransaction noClassicAccountTransaction) {
+        final ObjectNode node = output.addObject();
+        node.put("description", noClassicAccountTransaction.getDescription());
+        node.put("timestamp", noClassicAccountTransaction.getTimestamp());
+    }
+
+    @Override
+    public void visit(PlanAlreadyActiveTransaction planAlreadyActiveTransaction) {
+        final ObjectNode node = output.addObject();
+        node.put("description", planAlreadyActiveTransaction.getDescription());
+        node.put("timestamp", planAlreadyActiveTransaction.getTimestamp());
+    }
+
+    @Override
+    public void visit(GenericTransaction genericTransaction) {
+        final ObjectNode node = output.addObject();
+        node.put("description", genericTransaction.getDescription());
+        node.put("timestamp", genericTransaction.getTimestamp());
     }
 }

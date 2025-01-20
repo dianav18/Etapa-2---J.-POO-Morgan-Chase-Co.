@@ -17,12 +17,14 @@ public final class SplitPaymentTransaction extends Transaction {
     private final SplitPaymentCommand command;
     private final boolean error;
     private final String problematicAccountIBAN;
+    private boolean rejected;
 
-    public SplitPaymentTransaction(final SplitPaymentCommand command, final boolean error, final String problematicAccountIBAN) {
+    public SplitPaymentTransaction(final SplitPaymentCommand command, final boolean error, final String problematicAccountIBAN, boolean rejected) {
         super(command.getTimestamp(), "Split payment", "splitPayment");
         this.command = command;
         this.error = error;
         this.problematicAccountIBAN = problematicAccountIBAN;
+        this.rejected = rejected;
     }
 
     /**

@@ -5,32 +5,34 @@ import lombok.Getter;
 /**
  * Represents a transaction for withdrawing funds from a savings account.
  */
+@Getter
 public final class WithdrawSavingsTransaction extends Transaction {
     /**
      * -- GETTER --
-     *  Gets the withdrawn amount.
+     * Gets the withdrawn amount.
      *
      * @return the amount
      */
     @Getter
     private final double amount;
-    private final String description;
+    private final String classicAccountIBAN;
+    private final String savingsAccountIBAN;
 
-    /**
-     * Instantiates a new Withdraw savings transaction.
-     *
-     * @param timestamp   the timestamp of the transaction
-     * @param description the description of the transaction
-     * @param amount      the amount withdrawn
-     */
-    public WithdrawSavingsTransaction(final int timestamp, final String description, final double amount) {
-        super(timestamp, description, "withdrawSavings");
+
+    public WithdrawSavingsTransaction(final int timestamp, final double amount, String classicAccountIBAN, String savingsAccountIBAN) {
+        super(timestamp, "Savings withdrawal", "withdrawSavings");
         this.amount = amount;
-        this.description = description;
+        this.classicAccountIBAN = classicAccountIBAN;
+        this.savingsAccountIBAN = savingsAccountIBAN;
     }
 
     @Override
     public void accept(final TransactionVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public boolean allowsDuplication() {
+        return true;
     }
 }

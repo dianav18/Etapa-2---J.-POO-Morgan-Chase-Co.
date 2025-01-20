@@ -13,6 +13,7 @@ public class Commerciant {
     private String commerciantType;
     private String cashbackStrategy;
     private double totalSpent;
+    private NumberOfTransactionsCashback numberOfTransactionsCashback = new NumberOfTransactionsCashback();
 
     private Commerciant(final Builder builder) {
         this.name = builder.name;

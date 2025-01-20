@@ -1,6 +1,7 @@
 package org.poo.bankInput.transactions;
 
 import lombok.Getter;
+import org.poo.bankInput.User;
 
 /**
  * Represents a transaction that occurs when an
@@ -8,6 +9,8 @@ import lombok.Getter;
  */
 @Getter
 public final class SentTransaction extends Transaction {
+
+    private final User user;
     private final String senderIBAN;
     private final String receiverIBAN;
     private final double amount;
@@ -23,10 +26,11 @@ public final class SentTransaction extends Transaction {
      * @param amount       the amount of money sent.
      * @param currency     the currency of the transaction.
      */
-    public SentTransaction(final int timestamp, final String description,
+    public SentTransaction(User user, final int timestamp, final String description,
                            final String senderIBAN, final String receiverIBAN,
                            final double amount, final String currency) {
         super(timestamp, description, "sent");
+        this.user = user;
         this.senderIBAN = senderIBAN;
         this.receiverIBAN = receiverIBAN;
         this.amount = amount;

@@ -6,6 +6,7 @@ import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.Transaction;
 import org.poo.bankInput.transactions.TransactionPrinter;
 import org.poo.handlers.CommandHandler;
+import org.poo.main.Main;
 
 import java.util.List;
 
@@ -34,22 +35,22 @@ public final class PrintTransactionsCommand implements CommandHandler {
 
     @Override
     public void execute(final ArrayNode output) {
-        for (final User user : users) {
-            if (user.getEmail().equals(email)) {
-                final ObjectNode commandOutput = output.addObject();
-                commandOutput.put("command", "printTransactions");
-                commandOutput.put("timestamp", timestamp);
+        User user = Main.getUser(email);
 
-                final ArrayNode transactionsOutput = commandOutput.putArray("output");
+        if (user == null) {
+            return;
+        }
 
-                final TransactionPrinter printer = new TransactionPrinter(transactionsOutput);
+        final ObjectNode commandOutput = output.addObject();
+        commandOutput.put("command", "printTransactions");
+        commandOutput.put("timestamp", timestamp);
 
-                for (final Transaction transaction : user.getTransactions()) {
-                    transaction.accept(printer);
-                }
+        final ArrayNode transactionsOutput = commandOutput.putArray("output");
 
-                return;
-            }
+        final TransactionPrinter printer = new TransactionPrinter(transactionsOutput);
+
+        for (final Transaction transaction : user.getTransactions()) {
+            transaction.accept(printer);
         }
     }
 

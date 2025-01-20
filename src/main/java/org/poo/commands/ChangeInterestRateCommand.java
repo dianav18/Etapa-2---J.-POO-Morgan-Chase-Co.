@@ -2,11 +2,13 @@ package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.poo.Utils;
 import org.poo.bankInput.Account;
 import org.poo.bankInput.SavingsAccount;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.ChangeInterestRateTransaction;
 import org.poo.handlers.CommandHandler;
+import org.poo.main.Main;
 
 import java.util.List;
 
@@ -38,23 +40,14 @@ public final class ChangeInterestRateCommand implements CommandHandler {
 
     @Override
     public void execute(final ArrayNode output) {
-        boolean accountIsSavinAccount = false;
-        for (final User user : users) {
-            for (final Account account : user.getAccounts()) {
-                if (account.getAccountIBAN().equals(accountIBAN)) {
-                    if (account.getType().equals("savings")) {
-                        accountIsSavinAccount = true;
-                        final SavingsAccount savingsAccount = (SavingsAccount) account;
-                        savingsAccount.addTransaction(new ChangeInterestRateTransaction(timestamp,
-                                newInterestRate,
-                                "Interest rate of the account changed to " + newInterestRate));
-                        savingsAccount.addInterest(newInterestRate);
-                        return;
-                    }
-                }
-            }
+        Account account = Main.getAccount(accountIBAN);
+
+        if (account == null) {
+            Utils.accountNotFound(output, "changeInterest");
+            return;
         }
-        if (!accountIsSavinAccount) {
+
+        if (!account.getType().equals("savings")) {
             final ObjectNode outputNode = output.addObject();
             outputNode.put("command", "changeInterestRate");
             outputNode.put("timestamp", timestamp);
@@ -62,5 +55,9 @@ public final class ChangeInterestRateCommand implements CommandHandler {
             outputNode2.put("description", "This is not a savings account");
             outputNode2.put("timestamp", timestamp);
         }
+
+        final SavingsAccount savingsAccount = (SavingsAccount) account;
+        savingsAccount.addTransaction(new ChangeInterestRateTransaction(timestamp, newInterestRate, "Interest rate of the account changed to " + newInterestRate));
+        savingsAccount.setInterestRate(newInterestRate);
     }
 }

@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.poo.bankInput.transactions.Transaction;
+import org.poo.bankInput.transactions.UpgradePlanTransaction;
+import org.poo.main.Main;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * The type User.
@@ -24,6 +26,22 @@ public class User {
     private List<Account> accounts;
     private List<Transaction> transactions;
     private String plan;
+    private int over300Transactions = 0;
+
+    public void recordTransactionOver300(Account account) {
+        if (!plan.equals("silver")) {
+            return;
+        }
+        over300Transactions++;
+        freeUpgrade(account);
+    }
+
+    public void freeUpgrade(Account account) {
+        if (over300Transactions >= 5) {
+            account.addTransaction(new UpgradePlanTransaction(account.getAccountIBAN(), "Upgrade plan", "gold", Main.getTimestamp()));
+            plan = "gold";
+        }
+    }
 
     /**
      * Instantiates a new User.
@@ -81,15 +99,34 @@ public class User {
      * @return the transactions
      */
     public List<Transaction> getTransactions() {
-        final List<Transaction> output = new ArrayList<>();
-
-        output.addAll(this.transactions);
+        List<Transaction> output = new ArrayList<>(this.transactions);
 
         for (final Account account : accounts) {
             output.addAll(account.getTransactions());
         }
 
-        output.sort(Comparator.comparingInt(Transaction::getTimestamp));
+        output = new ArrayList<>(
+                output.stream()
+                        .collect(Collectors.toMap(
+                                (transaction) -> (transaction.allowsDuplication()
+                                        ? UUID.randomUUID() + ":" : "") + (transaction.getClass()
+                                        + ":" + transaction.getTimestamp()),
+                                Function.identity(),
+                                (existing, replacement) -> existing,
+                                LinkedHashMap::new
+                        ))
+                        .values()
+                        .stream()
+                        .toList()
+        );
+
+        output.sort(Comparator.comparingLong(transaction ->
+                transaction.getTimestamp() * 100000L + transaction.order()));
+
         return output;
+    }
+
+    public String getUsername() {
+        return lastName + " " + firstName;
     }
 }

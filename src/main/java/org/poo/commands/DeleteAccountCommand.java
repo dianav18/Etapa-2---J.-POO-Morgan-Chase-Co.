@@ -8,6 +8,7 @@ import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.CannotDeleteAccountTransaction;
 import org.poo.bankInput.transactions.CardDestroyedTransaction;
 import org.poo.handlers.CommandHandler;
+import org.poo.main.Main;
 
 import java.util.List;
 
@@ -38,37 +39,35 @@ public final class DeleteAccountCommand implements CommandHandler {
 
     @Override
     public void execute(final ArrayNode output) {
-        for (final User user : users) {
-            if (user.getEmail().equals(email)) {
-                for (final Account account : user.getAccounts()) {
-                    if (account.getAccountIBAN().equals(accountIBAN)) {
-                        if (account.getBalance() == 0) {
-                            for (final Card card : account.getCards()) {
-                                card.destroy();
-                                account.addTransaction(new CardDestroyedTransaction(
-                                        timestamp,
-                                        "The card has been destroyed",
-                                        accountIBAN,
-                                        card.getCardNumber(),
-                                        email
-                                ));
-                            }
-                            user.removeAccount(account);
-                            break;
-                        } else {
-                            account.addTransaction(new CannotDeleteAccountTransaction(
-                                    timestamp,
-                                    "The account couldn't be deleted because it has"
-                                            + "a balance greater than 0"
-                            ));
-                            outputError(output);
-                            return;
-                        }
-                    }
-                }
+        User user = Main.getUser(email);
+        Account account = Main.getAccount(accountIBAN);
 
-            }
+        if (user == null || account == null) {
+            //todo error
+            return;
         }
+
+        if (account.getBalance() != 0) {
+            account.addTransaction(new CannotDeleteAccountTransaction(
+                    timestamp,
+                    "The account couldn't be deleted because it has"
+                            + "a balance greater than 0"
+            ));
+            outputError(output);
+            return;
+        }
+
+        for (final Card card : account.getCards()) {
+            card.destroy();
+            account.addTransaction(new CardDestroyedTransaction(
+                    timestamp,
+                    "The card has been destroyed",
+                    accountIBAN,
+                    card.getCardNumber(),
+                    email
+            ));
+        }
+        user.removeAccount(account);
         outputPrint(output);
     }
 

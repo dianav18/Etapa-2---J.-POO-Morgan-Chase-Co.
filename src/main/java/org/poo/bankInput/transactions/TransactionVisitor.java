@@ -103,4 +103,7 @@ public interface TransactionVisitor {
     void visit(CashWithdrawalTransaction cashWithdrawalTransaction);
 
     void visit(AddInterestTransaction addInterestTransaction);
+    void visit(NoClassicAccountTransaction noClassicAccountTransaction);
+    void visit(PlanAlreadyActiveTransaction planAlreadyActiveTransaction);
+    void visit(GenericTransaction genericTransaction);
 }

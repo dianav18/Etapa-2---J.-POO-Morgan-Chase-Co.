@@ -6,6 +6,7 @@ import org.poo.bankInput.Card;
 import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.CardCreatedTransaction;
 import org.poo.handlers.CommandHandler;
+import org.poo.main.Main;
 import org.poo.utils.Utils;
 
 import java.util.List;
@@ -52,18 +53,15 @@ public final class AddCardsCommand implements CommandHandler {
             return;
         }
 
-        for (final User user : users) {
-            if (user.getEmail().equals(email)) {
-                for (final Account account : user.getAccounts()) {
-                    if (account.getAccountIBAN().equals(accountIBAN)) {
-                        final String cardNumber = Utils.generateCardNumber();
-                        final Card newCard = new Card(cardNumber, isOneTime);
-                        account.addCard(newCard);
-                        account.addTransaction(new CardCreatedTransaction(timestamp,
-                                account.getAccountIBAN(), cardNumber, user.getEmail()));
-                    }
-                }
-            }
+        Account account = Main.getAccount(accountIBAN);
+
+        if (account == null) {
+            return;
         }
+
+        final String cardNumber = Utils.generateCardNumber();
+        final Card newCard = new Card(account, cardNumber, isOneTime);
+        account.addCard(newCard);
+        account.addTransaction(new CardCreatedTransaction(timestamp, account.getAccountIBAN(), cardNumber, email));
     }
 }

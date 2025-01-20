@@ -22,4 +22,9 @@ public class UpgradePlanTransaction extends Transaction{
     public void accept(final TransactionVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public int order() {
+        return 99;
+    }
 }

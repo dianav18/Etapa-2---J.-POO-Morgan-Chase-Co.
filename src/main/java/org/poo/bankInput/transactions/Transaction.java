@@ -29,5 +29,13 @@ public abstract class Transaction {
      * @param visitor the visitor
      */
     public abstract void accept(TransactionVisitor visitor);
+
+    public boolean allowsDuplication(){
+        return false;
+    }
+
+    public int order(){
+        return 0;
+    }
 }
 

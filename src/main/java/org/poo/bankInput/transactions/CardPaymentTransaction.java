@@ -1,6 +1,7 @@
 package org.poo.bankInput.transactions;
 
 import lombok.Getter;
+import org.poo.bankInput.User;
 
 /**
  * Represents a transaction for a payment made using a card.
@@ -9,6 +10,8 @@ import lombok.Getter;
  */
 @Getter
 public final class CardPaymentTransaction extends Transaction {
+
+    private User user;
     private final double amount;
     private final String commerciant;
     private final String description;
@@ -21,9 +24,10 @@ public final class CardPaymentTransaction extends Transaction {
      * @param amount      the amount of money involved in the transaction.
      * @param commerciant the name of the commerciant where the payment was made.
      */
-    public CardPaymentTransaction(final int timestamp, final String description,
+    public CardPaymentTransaction(User user, final int timestamp, final String description,
                                   final double amount, final String commerciant) {
         super(timestamp, description, "cardPayment");
+        this.user = user;
         this.amount = amount;
         this.commerciant = commerciant;
         this.description = description;
