@@ -48,7 +48,6 @@ public final class DeleteAccountCommand implements CommandHandler {
         final Account account = Main.getAccount(accountIBAN);
 
         if (user == null || account == null) {
-            //todo error
             return;
         }
 

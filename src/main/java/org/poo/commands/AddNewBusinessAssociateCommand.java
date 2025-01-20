@@ -31,7 +31,6 @@ public class AddNewBusinessAssociateCommand implements CommandHandler {
         final User user = Main.getUser(email);
 
         if (localAccount == null || !localAccount.getType().equals("business") || user == null) {
-            // TODO error
             return;
         }
 

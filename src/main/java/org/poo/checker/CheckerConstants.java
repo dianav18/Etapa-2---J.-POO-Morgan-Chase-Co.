@@ -11,7 +11,6 @@ public final class CheckerConstants {
     /**
      * The constant BIG_TEST_POINTS.
      */
-// checker constants
     public static final Integer BIG_TEST_POINTS = 3;
     /**
      * The constant MAXIMUM_ERROR_CHECKSTYLE.

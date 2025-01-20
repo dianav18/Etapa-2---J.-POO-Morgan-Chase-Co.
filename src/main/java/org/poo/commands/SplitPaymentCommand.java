@@ -96,7 +96,6 @@ public final class SplitPaymentCommand implements CommandHandler {
             final Account account = Main.getAccount(accountIBAN);
 
             if (account == null) {
-                // todo error
                 continue;
             }
 
@@ -115,7 +114,6 @@ public final class SplitPaymentCommand implements CommandHandler {
                 final Account account = Main.getAccount(accountIBAN);
 
                 if (account == null) {
-                    // todo error
                     continue;
                 }
 
@@ -129,7 +127,6 @@ public final class SplitPaymentCommand implements CommandHandler {
             final Account account = Main.getAccount(accountIBAN);
 
             if (account == null) {
-                // todo error
                 continue;
             }
 

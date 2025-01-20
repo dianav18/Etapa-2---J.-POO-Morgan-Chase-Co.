@@ -66,7 +66,6 @@ The project is organized into several packages to separate application logic:
 - **commands:** Command implementations using the Command pattern.
 - **transactions:** Classes modeling transactions and their logic.
 - **handlers:** Classes for handling commands and currency conversions.
-- **utils:** Utility classes for common functionalities.
 
 ## Key Features
 

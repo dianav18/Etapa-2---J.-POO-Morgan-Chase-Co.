@@ -10,12 +10,10 @@ public final class SpendingThreshold {
     private SpendingThreshold() {
     }
 
-    // Constants for threshold limits
     private static final double THRESHOLD_LIMIT_500 = 500.0;
     private static final double THRESHOLD_LIMIT_300 = 300.0;
     private static final double THRESHOLD_LIMIT_100 = 100.0;
 
-    // Cashback percentages for different plans
     private static final double STANDARD_STUDENT_CASHBACK_500 = 0.25 / 100;
     private static final double SILVER_CASHBACK_500 = 0.5 / 100;
     private static final double GOLD_CASHBACK_500 = 0.7 / 100;
