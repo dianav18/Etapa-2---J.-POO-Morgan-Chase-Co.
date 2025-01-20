@@ -1,34 +1,99 @@
-# Project Assignment POO  - J. POO Morgan - Phase One
+### Bank Management System
 
-![](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2dibmZueTVmbGNoY2kxcDlkdHpsd3hvNDA5ZTRleHcwMzRxM2x0OSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/lJEGgG5ajs4zC/giphy.gif)
+## Overview 
+This Java project implements various functionalities related to a banking system, utilizing several
+design patterns to encourage code reusability and a well-defined architecture.
 
-#### Assignment Link: [https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-etapa2](https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-etapa2)
+## Design Patterns Used
 
-## Skel Structure
+### 1. Singleton
 
-* src/
-    * checker/ - checker files
-    * fileio/ - contains classes used to read data from the json files
-    * main/
-        * Main - the Main class runs the checker on your implementation. Add the entry point to your implementation in it. Run Main to test your implementation from the IDE or from command line.
-        * Test - run the main method from Test class with the name of the input file from the command line and the result will be written
-          to the out.txt file. Thus, you can compare this result with ref.
-* input/ - contains the tests in JSON format
-* ref/ - contains all reference output for the tests in JSON format
+The Singleton pattern ensures that a class has a single instance throughout the application's
+lifecycle.
 
-## Tests
+**Classes implementing Singleton:**
 
-Tests Basic 1 - 10: Infrastructure \
-Tests Functional 11 - 17: Advanced \
-Tests Flow 18 - 20: Large Input
+- `Account`
+- `User`
+- `Checker`
+- `Utils`
 
-1. test01_user_updates - 2p
-2. test02_upgrade_plan - 2p
-3. test04_commisions - 2p
-4. test05_savings_update - 2p
-5. test06_cashback - 2p
-6. test07_simple_split_payment - 2p
-7. test08_advanced_split_payment - 2p
-8. test09_business_account_simple - 2p
-9. test10_business_account_limits - 2p
+### 2. Template Method
+
+Template Method defines the general structure of an algorithm in a method of a parent class,
+allowing derived classes to implement specific steps.
+
+**Classes implementing Template Method:**
+
+- `BusinessAccount`
+- `ClassicAccount`
+- `SavingsAccount`
+
+### 3. Command
+
+The Command pattern encapsulates requests as objects, enabling flexible and modular command usage.
+
+**Classes implementing Command:**
+
+- `AcceptSplitPaymentCommand`
+- `AddAccountCommand`
+- `SendMoneyCommand`
+- And many others in the `commands` package.
+
+### 4. Factory Method
+
+The Factory Method pattern delegates object creation in a flexible way.
+
+**Classes implementing Factory Method:**
+
+- `Checker`
+- `CommandLogicFactory`
+
+### 5. Visitor
+
+The Visitor pattern separates algorithms from the structure of objects, allowing the addition of
+new operations without modifying the existing structure.
+
+**Classes implementing Visitor:**
+
+- `TransactionVisitor`
+- `BusinessTransactionPrinter`
+## Project Structure
+
+The project is organized into several packages to separate application logic:
+
+- **bankInput:** Core classes for accounts, users, and related logic.
+- **commands:** Command implementations using the Command pattern.
+- **transactions:** Classes modeling transactions and their logic.
+- **handlers:** Classes for handling commands and currency conversions.
+- **utils:** Utility classes for common functionalities.
+
+## Key Features
+
+- Management of multiple account types, including classic, savings, and business accounts.
+- Support for various transactions, such as deposits, withdrawals, transfers, and online payments.
+- Implementation of an extensible and modular architecture using design patterns.
+- Detailed financial reports for users and merchants.
+- Real-time currency conversion using predefined exchange rates.
+
+## Bank Flow
+
+1. **User Creation:**
+    - Users can create accounts using classes like `AddAccountCommand`.
+2. **Adding Funds:**
+    - Funds can be added to accounts using `AddFundsCommand`.
+3. **Transactions:**
+    - Users can perform transactions between accounts or to merchants using specific commands.
+4. **Generating Reports:**
+    - Expense and transaction reports can be generated using commands like
+    - `SpendingReportPrintCommand`.
+5. **Card Management:**
+    - Cards associated with accounts can be created, deleted, or configured through
+    - dedicated commands.
+
+## Conclusion
+
+This project effectively utilizes multiple design patterns to create a modular and extensible
+architecture. Their use facilitates the addition of new features and the maintenance of
+the codebase.
 
