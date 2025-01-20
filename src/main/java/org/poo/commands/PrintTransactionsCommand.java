@@ -33,9 +33,14 @@ public final class PrintTransactionsCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        User user = Main.getUser(email);
+        final User user = Main.getUser(email);
 
         if (user == null) {
             return;

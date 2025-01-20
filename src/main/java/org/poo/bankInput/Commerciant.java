@@ -6,14 +6,15 @@ import lombok.Getter;
  * The type Commerciant.
  */
 @Getter
-public class Commerciant {
-    private String name;
-    private int commerciantID;
-    private String commerciantIBAN;
-    private String commerciantType;
-    private String cashbackStrategy;
+public final class Commerciant {
+    private final String name;
+    private final int commerciantID;
+    private final String commerciantIBAN;
+    private final String commerciantType;
+    private final String cashbackStrategy;
     private double totalSpent;
-    private NumberOfTransactionsCashback numberOfTransactionsCashback = new NumberOfTransactionsCashback();
+    private final NumberOfTransactionsCashback numberOfTransactionsCashback
+            = new NumberOfTransactionsCashback();
 
     private Commerciant(final Builder builder) {
         this.name = builder.name;
@@ -33,6 +34,9 @@ public class Commerciant {
         totalSpent += amount;
     }
 
+    /**
+     * The type Builder.
+     */
     public static class Builder {
         private String name;
         private int commerciantID;
@@ -41,35 +45,75 @@ public class Commerciant {
         private String cashbackStrategy;
         private double totalSpent = 0;
 
+        /**
+         * Instantiates a new Builder.
+         *
+         * @param name the name
+         */
         public Builder(final String name) {
             this.name = name;
         }
 
-        public Builder commerciantID(final int commerciantID) {
+        /**
+         * Commerciant id builder.
+         *
+         * @param argCommerciantID the commerciant id
+         * @return the builder
+         */
+        public Builder commerciantID(final int argCommerciantID) {
             this.commerciantID = commerciantID;
             return this;
         }
 
-        public Builder commerciantIBAN(final String commerciantIBAN) {
-            this.commerciantIBAN = commerciantIBAN;
+        /**
+         * Commerciant iban builder.
+         *
+         * @param argCommerciantIBAN the commerciant iban
+         * @return the builder
+         */
+        public Builder commerciantIBAN(final String argCommerciantIBAN) {
+            this.commerciantIBAN = argCommerciantIBAN;
             return this;
         }
 
-        public Builder commerciantType(final String commerciantType) {
-            this.commerciantType = commerciantType;
+        /**
+         * Commerciant type builder.
+         *
+         * @param argCommerciantType the commerciant type
+         * @return the builder
+         */
+        public Builder commerciantType(final String argCommerciantType) {
+            this.commerciantType = argCommerciantType;
             return this;
         }
 
-        public Builder cashbackStrategy(final String cashbackStrategy) {
-            this.cashbackStrategy = cashbackStrategy;
+        /**
+         * Cashback strategy builder.
+         *
+         * @param argCashbackStrategy the cashback strategy
+         * @return the builder
+         */
+        public Builder cashbackStrategy(final String argCashbackStrategy) {
+            this.cashbackStrategy = argCashbackStrategy;
             return this;
         }
 
-        public Builder totalSpent(final double totalSpent) {
-            this.totalSpent = totalSpent;
+        /**
+         * Total spent builder.
+         *
+         * @param argTotalSpent the total spent
+         * @return the builder
+         */
+        public Builder totalSpent(final double argTotalSpent) {
+            this.totalSpent = argTotalSpent;
             return this;
         }
 
+        /**
+         * Build commerciant.
+         *
+         * @return the commerciant
+         */
         public Commerciant build() {
             return new Commerciant(this);
         }

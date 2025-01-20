@@ -17,6 +17,7 @@ public final class ExchangeRateMapper {
     private ExchangeRateMapper() {
         throw new UnsupportedOperationException("Utility class");
     }
+
     /**
      * Map to exchange rates list.
      *

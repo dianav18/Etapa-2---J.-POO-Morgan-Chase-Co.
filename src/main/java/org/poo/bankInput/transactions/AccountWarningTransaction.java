@@ -14,7 +14,7 @@ public final class AccountWarningTransaction extends Transaction {
      * @param timestamp   the timestamp at which the warning occurred.
      *                    This value represents the chronological order of the transaction.
      * @param description a detailed description of the warning.
-     *                    For example, it might indicate that the account balance
+     *                    For example, it might indicate that the account
      *                    is close to the minimum threshold.
      */
     public AccountWarningTransaction(final int timestamp, final String description) {

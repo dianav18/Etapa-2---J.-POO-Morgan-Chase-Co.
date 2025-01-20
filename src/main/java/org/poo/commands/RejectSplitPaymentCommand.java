@@ -20,6 +20,11 @@ public final class RejectSplitPaymentCommand implements CommandHandler {
     private String splitPaymentType;
 
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         final User user = Main.getUser(email);

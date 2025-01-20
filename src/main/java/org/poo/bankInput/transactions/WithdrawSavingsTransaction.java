@@ -19,18 +19,38 @@ public final class WithdrawSavingsTransaction extends Transaction {
     private final String savingsAccountIBAN;
 
 
-    public WithdrawSavingsTransaction(final int timestamp, final double amount, String classicAccountIBAN, String savingsAccountIBAN) {
+    /**
+     * Instantiates a new Withdraw savings transaction.
+     *
+     * @param timestamp          the timestamp
+     * @param amount             the amount
+     * @param classicAccountIBAN the classic account iban
+     * @param savingsAccountIBAN the savings account iban
+     */
+    public WithdrawSavingsTransaction(final int timestamp, final double amount,
+                                      final String classicAccountIBAN,
+                                      final String savingsAccountIBAN) {
         super(timestamp, "Savings withdrawal", "withdrawSavings");
         this.amount = amount;
         this.classicAccountIBAN = classicAccountIBAN;
         this.savingsAccountIBAN = savingsAccountIBAN;
     }
 
+    /**
+     * Accept.
+     *
+     * @param visitor the visitor
+     */
     @Override
     public void accept(final TransactionVisitor visitor) {
         visitor.visit(this);
     }
 
+    /**
+     * Allows duplication boolean.
+     *
+     * @return the boolean
+     */
     @Override
     public boolean allowsDuplication() {
         return true;

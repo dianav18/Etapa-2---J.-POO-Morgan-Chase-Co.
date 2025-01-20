@@ -4,13 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
-import org.poo.bankInput.*;
+import org.poo.bankInput.Account;
+import org.poo.bankInput.Card;
+import org.poo.bankInput.Commerciant;
+import org.poo.bankInput.ExchangeRate;
+import org.poo.bankInput.NumberOfTransactionsCashback;
+import org.poo.bankInput.User;
 import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.commands.SplitPaymentCommand;
 import org.poo.fileio.CommandInput;
 import org.poo.fileio.ObjectInput;
-import org.poo.handlers.*;
+import org.poo.handlers.AccountExtractor;
+import org.poo.handlers.CommandHandler;
+import org.poo.handlers.CommandInvoker;
+import org.poo.handlers.CommandLogicFactory;
+import org.poo.handlers.CurrencyConverter;
 import org.poo.handlers.mappers.CommerciantMapper;
 import org.poo.handlers.mappers.ExchangeRateMapper;
 import org.poo.handlers.mappers.UserMapper;
@@ -82,6 +91,8 @@ public final class Main {
     private static int timestamp;
 
     /**
+     * Action.
+     *
      * @param filePath1 for input file
      * @param filePath2 for output file
      * @throws IOException in case of exceptions to reading / writing
@@ -103,30 +114,19 @@ public final class Main {
 
         commerciants = CommerciantMapper.mapToCommerciant(inputData.getCommerciants());
 
-        final List<ExchangeRate> exchangeRates = ExchangeRateMapper.mapToExchangeRates(inputData.getExchangeRates());
+        final List<ExchangeRate> exchangeRates = ExchangeRateMapper
+                .mapToExchangeRates(inputData.getExchangeRates());
         currencyConverter = new CurrencyConverter(exchangeRates);
         final List<Account> accounts = AccountExtractor.extractAccountsFromUsers(users);
 
         for (final CommandInput command : inputData.getCommands()) {
-            final CommandHandler commandInstance = CommandLogicFactory.getCommandLogic(command, users, accounts, currencyConverter);
+            final CommandHandler commandInstance = CommandLogicFactory
+                    .getCommandLogic(command, users, accounts, currencyConverter);
             if (commandInstance != null) {
                 timestamp = command.getTimestamp();
                 invoker.addCommand(commandInstance);
                 invoker.executeCommands(output);
             }
-
-            for (final User user : users) {
-//                System.out.println(user);
-                if (user.toString().contains("RO58POOB7344468893732422")) {
-                    System.out.println("[" + command.getTimestamp() + "] " + user);
-                    break;
-                }
-            }
-
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
         }
 
         final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
@@ -146,6 +146,12 @@ public final class Main {
         );
     }
 
+    /**
+     * Gets user.
+     *
+     * @param email the email
+     * @return the user
+     */
     public static User getUser(final String email) {
         for (final User user : users) {
             if (user.getEmail().equals(email)) {
@@ -155,6 +161,12 @@ public final class Main {
         return null;
     }
 
+    /**
+     * Gets account.
+     *
+     * @param iban the iban
+     * @return the account
+     */
     public static Account getAccount(final String iban) {
         for (final User user : users) {
             for (final Account account : user.getAccounts()) {
@@ -166,10 +178,17 @@ public final class Main {
         return null;
     }
 
-    public static Card getCard(User user, final String cardNumber) {
+    /**
+     * Gets card.
+     *
+     * @param user       the user
+     * @param cardNumber the card number
+     * @return the card
+     */
+    public static Card getCard(final User user, final String cardNumber) {
         for (final User checkUser : users) {
             for (final Account account : checkUser.getAccounts()) {
-                for (User accountUser : account.getUsers()) {
+                for (final User accountUser : account.getUsers()) {
                     if (accountUser.getEmail().equals(user.getEmail())) {
                         for (final Card card : account.getCards()) {
                             if (card.getCardNumber().equals(cardNumber)) {
@@ -183,9 +202,16 @@ public final class Main {
         return null;
     }
 
-    public static Commerciant getCommerciant(String commerciant) {
-        for (Commerciant checkCommerciant : commerciants) {
-            if (checkCommerciant.getCommerciantIBAN().equals(commerciant) || checkCommerciant.getName().equals(commerciant)) {
+    /**
+     * Gets commerciant.
+     *
+     * @param commerciant the commerciant
+     * @return the commerciant
+     */
+    public static Commerciant getCommerciant(final String commerciant) {
+        for (final Commerciant checkCommerciant : commerciants) {
+            if (checkCommerciant.getCommerciantIBAN().equals(commerciant)
+                    || checkCommerciant.getName().equals(commerciant)) {
                 return checkCommerciant;
             }
         }

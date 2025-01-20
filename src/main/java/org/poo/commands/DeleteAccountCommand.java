@@ -37,10 +37,15 @@ public final class DeleteAccountCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        User user = Main.getUser(email);
-        Account account = Main.getAccount(accountIBAN);
+        final User user = Main.getUser(email);
+        final Account account = Main.getAccount(accountIBAN);
 
         if (user == null || account == null) {
             //todo error

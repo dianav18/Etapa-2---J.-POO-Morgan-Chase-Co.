@@ -20,6 +20,9 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * The type Checker.
+ */
 public final class Checker {
     private static int gitScore;
     private static int readmeScore;
@@ -31,7 +34,7 @@ public final class Checker {
     private static void calculateScoreGit() {
         System.out.print("GIT commit score: ");
 
-        Path path = Paths.get("git_log.txt");
+        final Path path = Paths.get("git_log.txt");
         if (Files.exists(path)) {
             gitScore = CheckerConstants.FIVE_POINTS;
             System.out.println(gitScore + "/5");
@@ -44,9 +47,9 @@ public final class Checker {
     private static void calculateScoreReadme() {
         System.out.println("-----------------------------------------------------");
         System.out.print("README score: ");
-        Path path1 = Paths.get("README");
-        Path path2 = Paths.get("README.md");
-        Path path3 = Paths.get("README.txt");
+        final Path path1 = Paths.get("README");
+        final Path path2 = Paths.get("README.md");
+        final Path path3 = Paths.get("README.txt");
 
         if (Files.exists(path1) || Files.exists(path2) || Files.exists(path3)) {
             readmeScore = CheckerConstants.FIVE_POINTS;
@@ -60,15 +63,17 @@ public final class Checker {
 
     /**
      * This method is used to calculate total score of the implementation and checkstyle
+     *
+     * @throws IOException the io exception
      */
     public static void calculateScore() throws IOException {
         System.out.println();
         calculateScoreAllTests();
-        int checkstyleScore = calculateScoreCheckstyle();
+        final int checkstyleScore = calculateScoreCheckstyle();
         calculateScoreGit();
         calculateScoreReadme();
 
-        int finalScore = totalScore + gitScore + readmeScore + checkstyleScore;
+        final int finalScore = totalScore + gitScore + readmeScore + checkstyleScore;
         System.out.println("-----------------------------------------------------");
         System.out.println("Total: " + finalScore + "/100");
 
@@ -90,16 +95,16 @@ public final class Checker {
      * 18 tests (80 points maximum)
      */
     private static void calculateScoreAllTests() throws IOException {
-        File directory = new File(CheckerConstants.TESTS_PATH);
-        Path path = Paths.get(CheckerConstants.RESULT_PATH);
+        final File directory = new File(CheckerConstants.TESTS_PATH);
+        final Path path = Paths.get(CheckerConstants.RESULT_PATH);
         if (!Files.exists(path)) {
             Files.createDirectories(path);
         }
-        var listFile = Arrays.stream(Objects.requireNonNull(directory.listFiles())).
+        final var listFile = Arrays.stream(Objects.requireNonNull(directory.listFiles())).
                 sorted(Comparator.comparingInt(Main::fileConsumer))
                 .map(File::getName)
                 .toList();
-        for (String file : listFile) {
+        for (final String file : listFile) {
             totalScore += calculateScore(file);
         }
 
@@ -109,6 +114,8 @@ public final class Checker {
 
     /**
      * This method calculates the score of only one single test
+     *
+     * @param input the input
      * @return the score of that test
      */
     public static int calculateScore(final String input) {
@@ -136,9 +143,9 @@ public final class Checker {
      *          if the two files are equal or not
      */
     private static boolean checkOutput(final String file) {
-        ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper();
 
-        SimpleModule simpleModule = new SimpleModule();
+        final SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(Double.class, new DoubleDeserializer());
         mapper.registerModule(simpleModule);
 
@@ -151,7 +158,7 @@ public final class Checker {
 
             return output.equals(ref);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
         return false;
@@ -162,31 +169,31 @@ public final class Checker {
             final int precision,
             final ObjectMapper mapper) {
         if (node.isObject()) {
-            ObjectNode objectNode = (ObjectNode) node;
-            Iterator<String> fieldNames = objectNode.fieldNames();
+            final ObjectNode objectNode = (ObjectNode) node;
+            final Iterator<String> fieldNames = objectNode.fieldNames();
             while (fieldNames.hasNext()) {
-                String fieldName = fieldNames.next();
+                final String fieldName = fieldNames.next();
                 objectNode.set(
                         fieldName,
                         roundDecimals(objectNode.get(fieldName), precision, mapper)
                 );
             }
         } else if (node.isArray()) {
-            ArrayNode arrayNode = (ArrayNode) node;
+            final ArrayNode arrayNode = (ArrayNode) node;
             for (int i = 0; i < arrayNode.size(); i++) {
                 arrayNode.set(i, roundDecimals(arrayNode.get(i), precision, mapper));
             }
         } else if (node.isNumber() && node.isFloatingPointNumber()) {
-            BigDecimal roundedValue = BigDecimal.valueOf(node.asDouble())
+            final BigDecimal roundedValue = BigDecimal.valueOf(node.asDouble())
                     .setScale(precision, RoundingMode.HALF_UP);
             return mapper.getNodeFactory().numberNode(roundedValue);
         } else if (node.isTextual() && Pattern.matches(
                 CheckerConstants.DECIMALS_REGEX, node.asText())) {
-            String[] words = node.asText().split(" ");
+            final String[] words = node.asText().split(" ");
 
-            BigDecimal roundedValue = BigDecimal.valueOf(Double.parseDouble(words[0]))
+            final BigDecimal roundedValue = BigDecimal.valueOf(Double.parseDouble(words[0]))
                     .setScale(precision, RoundingMode.HALF_UP);
-            String actualValue = roundedValue + " " + words[1];
+            final String actualValue = roundedValue + " " + words[1];
 
             return mapper.getNodeFactory().textNode(actualValue);
         }
@@ -198,7 +205,7 @@ public final class Checker {
      * @return  the score of that test
      */
     private static int getScoreForTest(final String input) {
-        int value = Integer.parseInt(
+        final int value = Integer.parseInt(
                 input.replaceAll(CheckerConstants.DIGIT_REGEX, CheckerConstants.EMPTY_STR)
                         .substring(0, 2)
         );

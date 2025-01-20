@@ -7,7 +7,12 @@ import org.poo.bankInput.Account;
 import org.poo.bankInput.Card;
 import org.poo.bankInput.Commerciant;
 import org.poo.bankInput.User;
-import org.poo.bankInput.transactions.*;
+import org.poo.bankInput.transactions.CardCreatedTransaction;
+import org.poo.bankInput.transactions.CardDestroyedTransaction;
+import org.poo.bankInput.transactions.CardFrozenTransaction;
+import org.poo.bankInput.transactions.CardPaymentTransaction;
+import org.poo.bankInput.transactions.CommerciantTransaction;
+import org.poo.bankInput.transactions.InsufficientFundsTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
 import org.poo.utils.Utils;
@@ -26,27 +31,32 @@ public final class PayOnlineCommand implements CommandHandler {
     private final String email;
 
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         if (amount == 0) {
             return;
         }
 
-        User user = Main.getUser(email);
+        final User user = Main.getUser(email);
 
         if (user == null) {
             cardNotFoundOutput(output);
             return;
         }
 
-        Card card = Main.getCard(user, cardNumber);
+        final Card card = Main.getCard(user, cardNumber);
 
         if (card == null) {
             cardNotFoundOutput(output);
             return;
         }
 
-        Account account = card.getAccount();
+        final Account account = card.getAccount();
 
         if (card.getStatus().equals("frozen")) {
             account.addTransaction(new CardFrozenTransaction(timestamp, "The card is frozen"));
@@ -58,7 +68,8 @@ public final class PayOnlineCommand implements CommandHandler {
             return;
         }
 
-        double convertedAmount = Main.getCurrencyConverter().convert(amount, currency, account.getCurrency());
+        final double convertedAmount = Main.getCurrencyConverter()
+                .convert(amount, currency, account.getCurrency());
 
         boolean found = false;
         for (final Commerciant userCommerciant : account.getCommerciants()) {
@@ -69,7 +80,8 @@ public final class PayOnlineCommand implements CommandHandler {
             }
         }
 
-        account.addCommerciantTransaction(new CommerciantTransaction(user, commerciant, convertedAmount, timestamp));
+        account.addCommerciantTransaction(
+                new CommerciantTransaction(user, commerciant, convertedAmount, timestamp));
 
         if (!found) {
             final Commerciant newCommerciant = new Commerciant.Builder(commerciant).build();
@@ -77,14 +89,18 @@ public final class PayOnlineCommand implements CommandHandler {
             account.addCommerciant(newCommerciant);
         }
 
-        account.addTransaction(new CardPaymentTransaction(user, timestamp, description, convertedAmount, commerciant));
+        account.addTransaction(new CardPaymentTransaction(user, timestamp, description,
+                convertedAmount, commerciant));
 
         if (card.isOneTime()) {
-            account.addTransaction(new CardDestroyedTransaction(timestamp, "Card destroyed", account.getAccountIBAN(), card.getCardNumber(), user.getEmail()));
+            account.addTransaction(new CardDestroyedTransaction(timestamp,
+                    "Card destroyed", account.getAccountIBAN(), card.getCardNumber(),
+                    user.getEmail()));
             account.removeCard(card);
             final Card newCard = new Card(account, Utils.generateCardNumber(), true);
             account.addCard(newCard);
-            account.addTransaction(new CardCreatedTransaction(timestamp, account.getAccountIBAN(), newCard.getCardNumber(), user.getEmail()));
+            account.addTransaction(new CardCreatedTransaction(timestamp, account.getAccountIBAN(),
+                    newCard.getCardNumber(), user.getEmail()));
         }
 
 

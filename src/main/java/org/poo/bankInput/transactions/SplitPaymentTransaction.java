@@ -3,8 +3,6 @@ package org.poo.bankInput.transactions;
 import lombok.Getter;
 import org.poo.commands.SplitPaymentCommand;
 
-import java.util.List;
-
 /**
  * This transaction is used to process a split payment.
  * This transaction includes details about the currency,
@@ -19,7 +17,17 @@ public final class SplitPaymentTransaction extends Transaction {
     private final String problematicAccountIBAN;
     private boolean rejected;
 
-    public SplitPaymentTransaction(final SplitPaymentCommand command, final boolean error, final String problematicAccountIBAN, boolean rejected) {
+    /**
+     * Instantiates a new Split payment transaction.
+     *
+     * @param command                the command
+     * @param error                  the error
+     * @param problematicAccountIBAN the problematic account iban
+     * @param rejected               the rejected
+     */
+    public SplitPaymentTransaction(final SplitPaymentCommand command,
+                                   final boolean error, final String problematicAccountIBAN,
+                                   final boolean rejected) {
         super(command.getTimestamp(), "Split payment", "splitPayment");
         this.command = command;
         this.error = error;

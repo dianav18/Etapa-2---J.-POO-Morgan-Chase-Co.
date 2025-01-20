@@ -10,26 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The type Account.
- */
-/*
- * Class that represents an account.
- * An account has an IBAN, a currency, a type, a balance,
- * a list of cards, an alias, a minimum balance,
- * a list of commerciants, a list of commerciant
- * transactions and a list of transactions.
- * Class is extended by ClassicAccount, SavingsAccount
- * and BusinessAccount.
+ * Represents a bank account. This class contains details about the account owner, IBAN, currency,
+ * type, balance, associated cards, and other account-related information. It is extended by
+ * ClassicAccount, SavingsAccount, and BusinessAccount.
  */
 @Getter
 @Setter
 public class Account {
+    private static final int FREE_UPGRADE_SPENDING_THRESHOLD = 300;
+
     private User owner;
     private String accountIBAN;
     private String currency;
     private String type;
+
     @Setter(value = AccessLevel.PRIVATE)
     private double balance;
+
     private List<Card> cards;
     private String alias = "                          ";
     private double minBalance;
@@ -39,13 +36,15 @@ public class Account {
     private double totalAmountSpent;
 
     /**
-     * Instantiates a new Account.
+     * Constructs a new Account with the specified details.
      *
-     * @param accountIBAN the account iban
-     * @param currency    the currency
-     * @param type        the type
+     * @param owner       the owner of the account
+     * @param accountIBAN the account IBAN
+     * @param currency    the currency of the account
+     * @param type        the type of the account (e.g., Classic, Savings, Business)
      */
-    public Account(final User owner, final String accountIBAN, final String currency, final String type) {
+    public Account(final User owner, final String accountIBAN, final String currency,
+                   final String type) {
         this.owner = owner;
         this.accountIBAN = accountIBAN;
         this.currency = currency;
@@ -53,109 +52,121 @@ public class Account {
         this.balance = 0;
         this.cards = new ArrayList<>();
         this.minBalance = 0;
-        commerciants = new ArrayList<>();
-        commerciantTransactions = new ArrayList<>();
-        transactions = new ArrayList<>();
+        this.commerciants = new ArrayList<>();
+        this.commerciantTransactions = new ArrayList<>();
+        this.transactions = new ArrayList<>();
     }
 
-//    public void setBalance(final double balance) {
-//        this.balance = rountToTwoDecimals(balance);
-//    }
-
-//    private double rountToTwoDecimals(final double value) {
-//        return Math.round(value * 100.0) / 100.0;
-//    }
-
     /**
-     * Add card.
+     * Adds a card to the account.
      *
-     * @param card the card
+     * @param card the card to be added
      */
     public void addCard(final Card card) {
         this.cards.add(card);
     }
 
     /**
-     * Remove card.
+     * Removes a card from the account.
      *
-     * @param card the card
+     * @param card the card to be removed
      */
     public void removeCard(final Card card) {
         this.cards.remove(card);
     }
 
     /**
-     * Add commerciant.
+     * Adds a commerciant to the account.
      *
-     * @param commerciant the commerciant
+     * @param commerciant the commerciant to be added
      */
     public void addCommerciant(final Commerciant commerciant) {
         this.commerciants.add(commerciant);
     }
 
     /**
-     * Add commerciant transaction.
+     * Adds a commerciant transaction to the account.
      *
-     * @param transaction the transaction
+     * @param transaction the transaction to be added
      */
     public void addCommerciantTransaction(final Transaction transaction) {
         this.commerciantTransactions.add(transaction);
     }
 
     /**
-     * Add transaction.
+     * Adds a transaction to the account.
      *
-     * @param transaction the transaction
+     * @param transaction the transaction to be added
      */
     public void addTransaction(final Transaction transaction) {
         this.transactions.add(transaction);
     }
 
-    @Override
-    public String toString() {
-        return "Account{" +
-                "accountIBAN='" + accountIBAN + '\'' +
-                ", currency='" + currency + '\'' +
-                ", type='" + type + '\'' +
-                ", balance=" + balance +
-                '}';
+    /**
+     * Adds an amount to the account balance.
+     *
+     * @param user        the user performing the operation
+     * @param amount      the amount to be added
+     * @param argCurrency the currency of the amount
+     */
+    public void addBalance(final User user, final double amount, final String argCurrency) {
+        this.balance += Main.getCurrencyConverter().convert(amount, argCurrency, this.currency);
     }
 
-    public void addBalance(User user, double amount, String currency) {
-        this.balance += Main.getCurrencyConverter().convert(amount, currency, this.currency);
-    }
+    /**
+     * Attempts to remove an amount from the account balance.
+     *
+     * @param user        the user performing the operation
+     * @param amount      the amount to be removed
+     * @param argCurrency the currency of the amount
+     * @param commerciant the commerciant involved in the transaction
+     * @return {@code true} if the operation was successful, {@code false} otherwise
+     */
+    public boolean removeBalance(final User user, final double amount, final String argCurrency,
+                                 final String commerciant) {
+        final double realAmount = Main.getCurrencyConverter().convert(amount, argCurrency,
+                this.currency);
+        final double commission = Commission.calculateCommission(this, realAmount,
+                this.currency);
 
-
-    public boolean removeBalance(User user, double amount, String currency, String commerciant) {
-        double realAmount = Main.getCurrencyConverter().convert(amount, currency, this.currency);
-        double commission = Commission.calculateCommission(this, realAmount, this.currency);
-
-        // this is here because Cashback#calculate assumes the user has finished or is able to finish the transaction (i.e. has enough balance)
         if (this.balance - realAmount - commission < 0) {
             return false;
         }
 
-        double cashback = Cashback.calculate(realAmount, this.currency, this, commerciant);
+        final double cashback = Cashback.calculate(realAmount, this.currency, this,
+                commerciant);
 
         return removeBalance(user, realAmount, commission, cashback);
     }
 
-    public boolean removeBalance(User user, double amount, double commission, double cashback) {
+    /**
+     * Removes an amount from the account balance, considering commission and cashback.
+     *
+     * @param user       the user performing the operation
+     * @param amount     the amount to be removed
+     * @param commission the commission applied to the transaction
+     * @param cashback   the cashback applied to the transaction
+     * @return {@code true} if the operation was successful, {@code false} otherwise
+     */
+    public boolean removeBalance(final User user, final double amount, final double commission,
+                                 final double cashback) {
         if (this.balance - amount - commission < 0) {
             return false;
         }
 
-        System.out.println("Amount:     " + amount);
-        System.out.println("Commission: " + commission);
-        System.out.println("Cashback:   " + cashback);
-
         this.balance = this.balance - amount - commission + cashback;
-        if (Main.getCurrencyConverter().convert(amount, this.currency, "RON") >= 300) {
+        if (Main.getCurrencyConverter().convert(amount, this.currency, "RON")
+                >= FREE_UPGRADE_SPENDING_THRESHOLD) {
             owner.recordTransactionOver300(this);
         }
         return true;
     }
 
+    /**
+     * Retrieves a list of users associated with the account.
+     *
+     * @return a list containing the account owner
+     */
     public List<User> getUsers() {
         return List.of(owner);
     }

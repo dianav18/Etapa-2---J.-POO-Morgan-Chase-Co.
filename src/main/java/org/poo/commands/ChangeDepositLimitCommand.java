@@ -9,6 +9,9 @@ import org.poo.bankInput.User;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
 
+/**
+ * The type Change deposit limit command.
+ */
 /*
         },
         {
@@ -27,21 +30,26 @@ public class ChangeDepositLimitCommand implements CommandHandler {
     private double amount;
     private long timestamp;
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
-    public void execute(ArrayNode output) {
-        User user  = Main.getUser(email);
-        Account account = Main.getAccount(this.account);
+    public void execute(final ArrayNode output) {
+        final User user = Main.getUser(email);
+        final Account localAccount = Main.getAccount(this.account);
 
-        if (user == null || account == null || !account.getType().equals("business")) {
+        if (user == null || localAccount == null || !localAccount.getType().equals("business")) {
             return;
         }
 
-        BusinessAccount businessAccount = (BusinessAccount) account;
-        if(!businessAccount.setDepositLimit(user, amount)){
-            ObjectNode node =  output.addObject();
+        final BusinessAccount businessAccount = (BusinessAccount) localAccount;
+        if (!businessAccount.setDepositLimit(user, amount)) {
+            final ObjectNode node = output.addObject();
             node.put("command", "changeDepositLimit");
             node.put("timestamp", timestamp);
-            ObjectNode outputNode = node.putObject("output");
+            final ObjectNode outputNode = node.putObject("output");
             outputNode.put("description", "You must be owner in order to change deposit limit.");
             outputNode.put("timestamp", timestamp);
         }

@@ -38,9 +38,14 @@ public final class ChangeInterestRateCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        Account account = Main.getAccount(accountIBAN);
+        final Account account = Main.getAccount(accountIBAN);
 
         if (account == null) {
             Utils.accountNotFound(output, "changeInterest");
@@ -57,7 +62,8 @@ public final class ChangeInterestRateCommand implements CommandHandler {
         }
 
         final SavingsAccount savingsAccount = (SavingsAccount) account;
-        savingsAccount.addTransaction(new ChangeInterestRateTransaction(timestamp, newInterestRate, "Interest rate of the account changed to " + newInterestRate));
+        savingsAccount.addTransaction(new ChangeInterestRateTransaction(timestamp, newInterestRate,
+                "Interest rate of the account changed to " + newInterestRate));
         savingsAccount.setInterestRate(newInterestRate);
     }
 }

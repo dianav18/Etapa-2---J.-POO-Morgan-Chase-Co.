@@ -18,15 +18,20 @@ public final class AddFundsCommand implements CommandHandler {
     private final double amount;
     private final int timestamp;
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        User user = Main.getUser(this.email);
-        Account account = Main.getAccount(this.account);
+        final User user = Main.getUser(this.email);
+        final Account localAccount = Main.getAccount(this.account);
 
-        if (user == null || account == null) {
+        if (user == null || localAccount == null) {
             return;
         }
 
-        account.addBalance(user, amount, account.getCurrency());
+        localAccount.addBalance(user, amount, localAccount.getCurrency());
     }
 }

@@ -36,23 +36,25 @@ public final class AddInterestCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        boolean accountIsSavinAccount = false;
+        final boolean accountIsSavinAccount = false;
         for (final User user : users) {
             for (final Account account : user.getAccounts()) {
                 if (account.getAccountIBAN().equals(accountIBAN)) {
                     if (account.getType().equals("savings")) {
-                        accountIsSavinAccount = true;
                         final SavingsAccount savingsAccount = (SavingsAccount) account;
-                        savingsAccount.addTransaction(new AddInterestTransaction(savingsAccount.getBalance() *
-                                savingsAccount.getInterestRate() ,account.getCurrency(),
+                        savingsAccount.addTransaction(new AddInterestTransaction(
+                                savingsAccount.getBalance()
+                                * savingsAccount.getInterestRate(), account.getCurrency(),
                                 "Interest rate income", timestamp));
                         savingsAccount.addInterest(interestRate);
-                        System.out.println(interestRate);
 
-//                        savingsAccount.setInterestRate(interestRate);
-//                        System.out.println(interestRate);
                         return;
                     }
                 }

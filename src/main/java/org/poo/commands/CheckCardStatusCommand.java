@@ -11,7 +11,7 @@ import org.poo.handlers.CommandHandler;
 import java.util.List;
 
 /**
- *Checks the status of a card. If the account balance is below the
+ * Checks the status of a card. If the account balance is below the
  * minimum balance, the card is frozen.
  * If the card is not found, an error is displayed.
  */
@@ -34,6 +34,11 @@ public final class CheckCardStatusCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         boolean cardFound = false;

@@ -11,6 +11,9 @@ import org.poo.bankInput.transactions.UpgradePlanTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
 
+/**
+ * The type Upgrade plan command.
+ */
 @AllArgsConstructor
 public class UpgradePlanCommand implements CommandHandler {
 
@@ -18,25 +21,31 @@ public class UpgradePlanCommand implements CommandHandler {
     private final String accountIBAN;
     private final int timestamp;
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        Account account = Main.getAccount(accountIBAN);
+        final Account account = Main.getAccount(accountIBAN);
 
         if (account == null) {
-            ObjectNode node = output.addObject();
+            final ObjectNode node = output.addObject();
             node.put("command", "upgradePlan");
             node.put("timestamp", timestamp);
-            ObjectNode outputNode = node.putObject("output");
+            final ObjectNode outputNode = node.putObject("output");
             outputNode.put("description", "Account not found");
             outputNode.put("timestamp", timestamp);
             return;
         }
 
-        User user = account.getOwner();
+        final User user = account.getOwner();
 
         final double upgradeFee = getUpgradeFee(account.getOwner().getPlan(), newPlanType);
         final double finalUpgradeFee;
-        finalUpgradeFee = Main.getCurrencyConverter().convert(upgradeFee, "RON", account.getCurrency());
+        finalUpgradeFee = Main.getCurrencyConverter().convert(upgradeFee, "RON",
+                account.getCurrency());
 
         if (upgradeFee == -1) {
             account.addTransaction(new PlanAlreadyActiveTransaction(newPlanType, timestamp));
@@ -50,15 +59,26 @@ public class UpgradePlanCommand implements CommandHandler {
 
         user.setPlan(newPlanType);
 
-        account.addTransaction(new UpgradePlanTransaction(accountIBAN, "Upgrade plan", newPlanType, timestamp));
+        account.addTransaction(new UpgradePlanTransaction(accountIBAN, "Upgrade plan",
+                newPlanType, timestamp));
     }
+
+    private static final double SILVER_FEE = 100;
+    private static final double GOLD_FEE = 350;
+    private static final double GOLD_FEE_CHEAPER = 250;
 
     private double getUpgradeFee(final String currentPlan, final String newPlan) {
         if (currentPlan.equals("standard") || currentPlan.equals("student")) {
-            if (newPlan.equals("silver")) return 100;
-            if (newPlan.equals("gold")) return 350;
+            if (newPlan.equals("silver")) {
+                return SILVER_FEE;
+            }
+            if (newPlan.equals("gold")) {
+                return GOLD_FEE;
+            }
         }
-        if (currentPlan.equals("silver") && newPlan.equals("gold")) return 250;
+        if (currentPlan.equals("silver") && newPlan.equals("gold")) {
+            return GOLD_FEE_CHEAPER;
+        }
         return -1;
     }
 }

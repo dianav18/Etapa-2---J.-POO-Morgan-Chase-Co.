@@ -1,10 +1,19 @@
 package org.poo.bankInput.transactions;
 
+/**
+ * The type No classic account transaction.
+ */
 public class NoClassicAccountTransaction extends Transaction {
 
 
+    /**
+     * Instantiates a new No classic account transaction.
+     *
+     * @param timestamp the timestamp
+     */
     public NoClassicAccountTransaction(final int timestamp) {
-        super(timestamp, "You do not have a classic account.", "withdrawSavings");
+        super(timestamp, "You do not have a classic account.",
+                "withdrawSavings");
     }
 
     /**

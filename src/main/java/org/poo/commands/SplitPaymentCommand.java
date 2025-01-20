@@ -19,6 +19,9 @@ import java.util.List;
 @Getter
 public final class SplitPaymentCommand implements CommandHandler {
 
+    /**
+     * The constant ACTIVE_SPLIT_PAYMENTS.
+     */
     public static final List<SplitPaymentCommand> ACTIVE_SPLIT_PAYMENTS = new ArrayList<>();
 
     private final int timestamp;
@@ -30,6 +33,12 @@ public final class SplitPaymentCommand implements CommandHandler {
     private final List<Double> amountForUsers;
     private final List<String> acceptedAccounts = new ArrayList<>();
 
+    /**
+     * Accept.
+     *
+     * @param email  the email
+     * @param output the output
+     */
     public void accept(final String email, final ArrayNode output) {
         acceptedAccounts.add(email);
 
@@ -38,11 +47,17 @@ public final class SplitPaymentCommand implements CommandHandler {
         }
     }
 
+    /**
+     * Reject.
+     *
+     * @param email  the email
+     * @param output the output
+     */
     public void reject(final String email, final ArrayNode output) {
-        for (String accountIBAN : accountsForSplit) {
+        for (final String accountIBAN : accountsForSplit) {
             final Account account = Main.getAccount(accountIBAN);
 
-            if(account==null){
+            if (account == null) {
                 continue;
             }
 
@@ -52,6 +67,12 @@ public final class SplitPaymentCommand implements CommandHandler {
         ACTIVE_SPLIT_PAYMENTS.remove(this);
     }
 
+    /**
+     * Gets part.
+     *
+     * @param iban the iban
+     * @return the part
+     */
     public double getPart(final String iban) {
         if (splitPaymentType.equals("equal")) {
             return amount / accountsForSplit.size();
@@ -60,6 +81,11 @@ public final class SplitPaymentCommand implements CommandHandler {
         }
     }
 
+    /**
+     * Finalize payment.
+     *
+     * @param output the output
+     */
     public void finalizePayment(final ArrayNode output) {
         ACTIVE_SPLIT_PAYMENTS.remove(this);
 
@@ -74,7 +100,8 @@ public final class SplitPaymentCommand implements CommandHandler {
                 continue;
             }
 
-            final double amountInAccountCurrency = Main.getCurrencyConverter().convert(getPart(accountIBAN), currency, account.getCurrency());
+            final double amountInAccountCurrency = Main.getCurrencyConverter()
+                    .convert(getPart(accountIBAN), currency, account.getCurrency());
 
             if (account.getBalance() < amountInAccountCurrency) {
                 problematicAccountIBAN = accountIBAN;
@@ -92,7 +119,8 @@ public final class SplitPaymentCommand implements CommandHandler {
                     continue;
                 }
 
-                account.addTransaction(new SplitPaymentTransaction(this, hasError, problematicAccountIBAN, false));
+                account.addTransaction(new SplitPaymentTransaction(this, hasError,
+                        problematicAccountIBAN, false));
             }
             return;
         }
@@ -105,13 +133,20 @@ public final class SplitPaymentCommand implements CommandHandler {
                 continue;
             }
 
-            final double amountInAccountCurrency = Main.getCurrencyConverter().convert(getPart(accountIBAN), currency, account.getCurrency());
+            final double amountInAccountCurrency = Main.getCurrencyConverter()
+                    .convert(getPart(accountIBAN), currency, account.getCurrency());
 
             account.removeBalance(account.getOwner(), amountInAccountCurrency, 0, 0);
-            account.addTransaction(new SplitPaymentTransaction(this, hasError, problematicAccountIBAN,false));
+            account.addTransaction(new SplitPaymentTransaction(this, hasError,
+                    problematicAccountIBAN, false));
         }
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         SplitPaymentCommand.ACTIVE_SPLIT_PAYMENTS.add(this);

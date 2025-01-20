@@ -1,6 +1,19 @@
 package org.poo.handlers;
 
-public class GetUserAge {
+/**
+ * The type Get user age.
+ */
+public final class GetUserAge {
+
+    private GetUserAge() {
+    }
+
+    /**
+     * Gets user age.
+     *
+     * @param birthDate the birth date
+     * @return the user age
+     */
     public static int getUserAge(final String birthDate) {
         final String[] birthDateArray = birthDate.split("-");
         final int birthYear = Integer.parseInt(birthDateArray[0]);

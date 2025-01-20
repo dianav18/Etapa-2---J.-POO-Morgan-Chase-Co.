@@ -17,6 +17,7 @@ public final class UserMapper {
     private UserMapper() {
         throw new UnsupportedOperationException("Utility class");
     }
+
     /**
      * Map to users list.
      *

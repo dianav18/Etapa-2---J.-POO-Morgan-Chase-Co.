@@ -2,6 +2,9 @@ package org.poo.utils;
 
 import java.util.Random;
 
+/**
+ * The type Utils.
+ */
 public final class Utils {
     private Utils() {
         // Checkstyle error free constructor
@@ -24,7 +27,7 @@ public final class Utils {
      * @return the IBAN as String
      */
     public static String generateIBAN() {
-        StringBuilder sb = new StringBuilder(RO_STR);
+        final StringBuilder sb = new StringBuilder(RO_STR);
         for (int i = 0; i < RO_STR.length(); i++) {
             sb.append(ibanRandom.nextInt(DIGIT_BOUND));
         }
@@ -43,7 +46,7 @@ public final class Utils {
      * @return the card number as String
      */
     public static String generateCardNumber() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < DIGIT_GENERATION; i++) {
             sb.append(cardRandom.nextInt(DIGIT_BOUND));
         }

@@ -6,7 +6,20 @@ import org.poo.fileio.CommerciantInput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommerciantMapper {
+/**
+ * The type Commerciant mapper.
+ */
+public final class CommerciantMapper {
+
+    private CommerciantMapper() {
+    }
+
+    /**
+     * Map to commerciant list.
+     *
+     * @param commerciantInputs the commerciant inputs
+     * @return the list
+     */
     public static List<Commerciant> mapToCommerciant(final CommerciantInput[] commerciantInputs) {
         final List<Commerciant> commerciants = new
                 ArrayList<>();

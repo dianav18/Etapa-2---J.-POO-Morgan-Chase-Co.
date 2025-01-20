@@ -19,6 +19,7 @@ public final class SentTransaction extends Transaction {
     /**
      * Instantiates a new Sent transaction.
      *
+     * @param user         the user
      * @param timestamp    the timestamp at which the transaction occurred.
      * @param description  a description of the transaction.
      * @param senderIBAN   the IBAN of the account sending the money.
@@ -26,7 +27,7 @@ public final class SentTransaction extends Transaction {
      * @param amount       the amount of money sent.
      * @param currency     the currency of the transaction.
      */
-    public SentTransaction(User user, final int timestamp, final String description,
+    public SentTransaction(final User user, final int timestamp, final String description,
                            final String senderIBAN, final String receiverIBAN,
                            final double amount, final String currency) {
         super(timestamp, description, "sent");

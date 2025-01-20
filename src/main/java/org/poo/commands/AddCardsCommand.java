@@ -39,6 +39,11 @@ public final class AddCardsCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         boolean userFound = false;
@@ -53,7 +58,7 @@ public final class AddCardsCommand implements CommandHandler {
             return;
         }
 
-        Account account = Main.getAccount(accountIBAN);
+        final Account account = Main.getAccount(accountIBAN);
 
         if (account == null) {
             return;
@@ -62,6 +67,7 @@ public final class AddCardsCommand implements CommandHandler {
         final String cardNumber = Utils.generateCardNumber();
         final Card newCard = new Card(account, cardNumber, isOneTime);
         account.addCard(newCard);
-        account.addTransaction(new CardCreatedTransaction(timestamp, account.getAccountIBAN(), cardNumber, email));
+        account.addTransaction(new CardCreatedTransaction(timestamp, account.getAccountIBAN(),
+                cardNumber, email));
     }
 }

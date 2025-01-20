@@ -9,8 +9,6 @@ import org.poo.bankInput.transactions.CardDestroyedTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
 
-import java.util.List;
-
 /**
  * It deletes a card from an account of a user.
  */
@@ -20,11 +18,16 @@ public final class DeleteCardCommand implements CommandHandler {
     private final int timestamp;
 
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         for (final User user : Main.getUsers()) {
             for (final Account account : user.getAccounts()) {
-                if(account.getBalance()!=0){
+                if (account.getBalance() != 0) {
                     return;
                 }
 

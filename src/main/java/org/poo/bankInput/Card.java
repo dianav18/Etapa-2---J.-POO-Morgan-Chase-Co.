@@ -18,10 +18,11 @@ public class Card {
     /**
      * Instantiates a new Card.
      *
+     * @param account    the account
      * @param cardNumber the card number
      * @param isOneTime  the is one time
      */
-    public Card(Account account, final String cardNumber, final boolean isOneTime) {
+    public Card(final Account account, final String cardNumber, final boolean isOneTime) {
         this.account = account;
         this.cardNumber = cardNumber;
         this.status = "active";

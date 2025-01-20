@@ -7,10 +7,12 @@ import org.poo.Utils;
 import org.poo.bankInput.Account;
 import org.poo.bankInput.BusinessAccount;
 import org.poo.bankInput.User;
-import org.poo.bankInput.transactions.GenericTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
 
+/**
+ * The type Change spending limit command.
+ */
 /*
         },
         {
@@ -29,26 +31,31 @@ public class ChangeSpendingLimitCommand implements CommandHandler {
     private double amount;
     private long timestamp;
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
-    public void execute(ArrayNode output) {
-        User user  = Main.getUser(email);
-        Account account = Main.getAccount(this.account);
+    public void execute(final ArrayNode output) {
+        final User user = Main.getUser(email);
+        final Account localAccount = Main.getAccount(this.account);
 
-        if (user == null || account == null) {
+        if (user == null || localAccount == null) {
             return;
         }
 
-        if(!account.getType().equals("business")){
+        if (!localAccount.getType().equals("business")) {
             Utils.notABusinessAccount(output, "changeSpendingLimit");
             return;
         }
 
-        BusinessAccount businessAccount = (BusinessAccount) account;
-        if(!businessAccount.setSpendingLimit(user, amount)){
-            ObjectNode node =  output.addObject();
+        final BusinessAccount businessAccount = (BusinessAccount) localAccount;
+        if (!businessAccount.setSpendingLimit(user, amount)) {
+            final ObjectNode node = output.addObject();
             node.put("command", "changeSpendingLimit");
             node.put("timestamp", timestamp);
-            ObjectNode outputNode = node.putObject("output");
+            final ObjectNode outputNode = node.putObject("output");
             outputNode.put("description", "You must be owner in order to change spending limit.");
             outputNode.put("timestamp", timestamp);
         }

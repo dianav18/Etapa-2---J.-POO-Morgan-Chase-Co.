@@ -16,7 +16,7 @@ public final class CardDestroyedTransaction extends Transaction {
     /**
      * Creates a new instance of a card destruction transaction.
      *
-     * @param timestamp   the timestamp at which the card was destroyed.
+     * @param timestamp   the timestamp at which the card was destroyed
      *                    This value represents the chronological order of the transaction.
      * @param description a description of the transaction.
      * @param account     the IBAN of the account associated with the destroyed card.

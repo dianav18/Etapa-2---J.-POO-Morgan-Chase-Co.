@@ -96,14 +96,52 @@ public interface TransactionVisitor {
      */
     void visit(ChangeInterestRateTransaction changeInterestRateTransaction);
 
+    /**
+     * Visit.
+     *
+     * @param withdrawSavingsTransaction the withdraw savings transaction
+     */
     void visit(WithdrawSavingsTransaction withdrawSavingsTransaction);
 
+    /**
+     * Visit.
+     *
+     * @param upgradePlanTransaction the upgrade plan transaction
+     */
     void visit(UpgradePlanTransaction upgradePlanTransaction);
 
+    /**
+     * Visit.
+     *
+     * @param cashWithdrawalTransaction the cash withdrawal transaction
+     */
     void visit(CashWithdrawalTransaction cashWithdrawalTransaction);
 
+    /**
+     * Visit.
+     *
+     * @param addInterestTransaction the add interest transaction
+     */
     void visit(AddInterestTransaction addInterestTransaction);
+
+    /**
+     * Visit.
+     *
+     * @param noClassicAccountTransaction the no classic account transaction
+     */
     void visit(NoClassicAccountTransaction noClassicAccountTransaction);
+
+    /**
+     * Visit.
+     *
+     * @param planAlreadyActiveTransaction the plan already active transaction
+     */
     void visit(PlanAlreadyActiveTransaction planAlreadyActiveTransaction);
+
+    /**
+     * Visit.
+     *
+     * @param genericTransaction the generic transaction
+     */
     void visit(GenericTransaction genericTransaction);
 }

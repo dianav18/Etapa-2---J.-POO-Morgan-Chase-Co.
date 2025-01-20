@@ -13,24 +13,27 @@ public final class Checkstyle {
     private Checkstyle() {
         //constructor for checkstyle
     }
+
     /**
      * DO NOT MODIFY
+     *
+     * @return the int
      */
     public static int testCheckstyle() {
-        ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar",
+        final ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar",
                 CheckerConstants.CHECKER_PATH + "/checkstyle-10.20.1-all.jar", "-c",
                 CheckerConstants.CHECKER_PATH + "/poo_checks.xml", "./");
 
         processBuilder.redirectErrorStream(true);
-        File log = new File("checkstyle.txt");
+        final File log = new File("checkstyle.txt");
         processBuilder.redirectOutput(log);
 
         try {
-            Process process = processBuilder.start();
+            final Process process = processBuilder.start();
             process.waitFor();
 
-            Path path = Paths.get("checkstyle.txt");
-            long lineCount = Files.lines(path).count();
+            final Path path = Paths.get("checkstyle.txt");
+            final long lineCount = Files.lines(path).count();
 
             long errors = 0;
             if (lineCount > 2) {
@@ -50,7 +53,7 @@ public final class Checkstyle {
             return (errors <= CheckerConstants.MAXIMUM_ERROR_CHECKSTYLE)
                     ? CheckerConstants.CHECKSTYLE_POINTS : 0;
 
-        } catch (IOException | InterruptedException e) {
+        } catch (final IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return 0;

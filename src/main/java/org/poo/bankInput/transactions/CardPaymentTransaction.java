@@ -19,12 +19,13 @@ public final class CardPaymentTransaction extends Transaction {
     /**
      * Instantiates a new Card payment transaction.
      *
+     * @param user        the user
      * @param timestamp   the timestamp of the transaction, indicating when the payment occurred.
      * @param description a description of the payment purpose.
      * @param amount      the amount of money involved in the transaction.
      * @param commerciant the name of the commerciant where the payment was made.
      */
-    public CardPaymentTransaction(User user, final int timestamp, final String description,
+    public CardPaymentTransaction(final User user, final int timestamp, final String description,
                                   final double amount, final String commerciant) {
         super(timestamp, description, "cardPayment");
         this.user = user;

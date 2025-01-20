@@ -7,7 +7,11 @@ import org.poo.bankInput.transactions.Transaction;
 import org.poo.bankInput.transactions.UpgradePlanTransaction;
 import org.poo.main.Main;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.UUID;
+import java.util.LinkedHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,13 +26,18 @@ public class User {
     private String lastName;
     private String email;
     private String birthDate;
-    private String Occupation;
+    private String occupation;
     private List<Account> accounts;
     private List<Transaction> transactions;
     private String plan;
     private int over300Transactions = 0;
 
-    public void recordTransactionOver300(Account account) {
+    /**
+     * Record transaction over 300.
+     *
+     * @param account the account
+     */
+    public void recordTransactionOver300(final Account account) {
         if (!plan.equals("silver")) {
             return;
         }
@@ -36,9 +45,17 @@ public class User {
         freeUpgrade(account);
     }
 
-    public void freeUpgrade(Account account) {
-        if (over300Transactions >= 5) {
-            account.addTransaction(new UpgradePlanTransaction(account.getAccountIBAN(), "Upgrade plan", "gold", Main.getTimestamp()));
+    private static final int OVER_300_TRANSACTIONS = 5;
+
+    /**
+     * Free upgrade.
+     *
+     * @param account the account
+     */
+    public void freeUpgrade(final Account account) {
+        if (over300Transactions >= OVER_300_TRANSACTIONS) {
+            account.addTransaction(new UpgradePlanTransaction(account.getAccountIBAN(),
+                    "Upgrade plan", "gold", Main.getTimestamp()));
             plan = "gold";
         }
     }
@@ -46,16 +63,19 @@ public class User {
     /**
      * Instantiates a new User.
      *
-     * @param firstName the first name
-     * @param lastName  the last name
-     * @param email     the email
+     * @param firstName  the first name
+     * @param lastName   the last name
+     * @param email      the email
+     * @param birthDate  the birth date
+     * @param occupation the occupation
      */
-    public User(final String firstName, final String lastName, final String email, final String birthDate, final String Occupation) {
+    public User(final String firstName, final String lastName, final String email,
+                final String birthDate, final String occupation) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.birthDate = birthDate;
-        this.Occupation = Occupation;
+        this.occupation = occupation;
         accounts = new ArrayList<>();
         transactions = new ArrayList<>();
 
@@ -93,6 +113,8 @@ public class User {
         this.transactions.add(transaction);
     }
 
+    private static final long TIMESTAMP_MULTIPLIER = 1000000L;
+
     /**
      * Gets transactions.
      *
@@ -120,12 +142,18 @@ public class User {
                         .toList()
         );
 
+
         output.sort(Comparator.comparingLong(transaction ->
-                transaction.getTimestamp() * 100000L + transaction.order()));
+                transaction.getTimestamp() * TIMESTAMP_MULTIPLIER + transaction.order()));
 
         return output;
     }
 
+    /**
+     * Gets username.
+     *
+     * @return the username
+     */
     public String getUsername() {
         return lastName + " " + firstName;
     }

@@ -11,7 +11,11 @@ import org.poo.bankInput.transactions.Transaction;
 import org.poo.bankInput.transactions.TransactionPrinter;
 import org.poo.handlers.CommandHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * It represents the spending report print command,
@@ -50,6 +54,11 @@ public final class SpendingReportPrintCommand implements CommandHandler {
         this.commerciants = new ArrayList<>();
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         boolean accountFound = false;

@@ -7,31 +7,46 @@ import org.poo.main.Main;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a business account, which is an extension of the Account class.
+ * This account type allows multiple business users, has spending and deposit limits,
+ * and provides additional role-based functionalities.
+ */
 @Getter
 public class BusinessAccount extends Account {
+    private static final int FREE_UPGRADE_SPENDING_THRESHOLD = 500;
 
-    private List<BusinessUser> businessUsers;
+    private final List<BusinessUser> businessUsers;
     private double depositLimit;
     private double spendingLimit;
 
     /**
-     * Instantiates a new Account.
+     * Constructs a new BusinessAccount.
      *
-     * @param accountIBAN the account iban
-     * @param currency    the currency
+     * @param owner       the owner of the account
+     * @param accountIBAN the account IBAN
+     * @param currency    the currency of the account
      */
     public BusinessAccount(final User owner, final String accountIBAN, final String currency) {
         super(owner, accountIBAN, currency, "business");
 
-        this.depositLimit = Main.getCurrencyConverter().convert(500, "RON", currency);
-        this.spendingLimit = Main.getCurrencyConverter().convert(500, "RON", currency);
+        this.depositLimit = Main.getCurrencyConverter().convert(FREE_UPGRADE_SPENDING_THRESHOLD,
+                "RON", currency);
+        this.spendingLimit = Main.getCurrencyConverter().convert(FREE_UPGRADE_SPENDING_THRESHOLD,
+                "RON", currency);
 
         this.businessUsers = new ArrayList<>();
         addUser(owner, "owner");
     }
 
-    public BusinessUser getBusinessUser(String email) {
-        for (BusinessUser user : businessUsers) {
+    /**
+     * Retrieves a business user by their email.
+     *
+     * @param email the email of the business user
+     * @return the BusinessUser object if found, otherwise {@code null}
+     */
+    public BusinessUser getBusinessUser(final String email) {
+        for (final BusinessUser user : businessUsers) {
             if (user.getUser().getEmail().equals(email)) {
                 return user;
             }
@@ -40,7 +55,13 @@ public class BusinessAccount extends Account {
         return null;
     }
 
-    public void addUser(User user, String role) {
+    /**
+     * Adds a new business user to the account.
+     *
+     * @param user the user to be added
+     * @param role the role of the user (e.g., "owner", "employee")
+     */
+    public void addUser(final User user, final String role) {
         if (getBusinessUser(user.getEmail()) != null) {
             return;
         }
@@ -48,6 +69,9 @@ public class BusinessAccount extends Account {
         businessUsers.add(new BusinessUser(user, role));
     }
 
+    /**
+     * Represents a business user associated with the account.
+     */
     @Getter
     @AllArgsConstructor
     public static class BusinessUser {
@@ -57,7 +81,13 @@ public class BusinessAccount extends Account {
         private double spent;
         private double deposited;
 
-        public BusinessUser(User user, String role) {
+        /**
+         * Constructs a new BusinessUser with default spending and deposit values.
+         *
+         * @param user the user
+         * @param role the role of the user
+         */
+        public BusinessUser(final User user, final String role) {
             this.user = user;
             this.username = user.getLastName() + " " + user.getFirstName();
             this.role = role;
@@ -65,24 +95,41 @@ public class BusinessAccount extends Account {
             this.deposited = 0;
         }
 
-        public void addSpent(double amount) {
+        /**
+         * Adds to the total amount spent by the business user.
+         *
+         * @param amount the amount to add
+         */
+        public void addSpent(final double amount) {
             this.spent += amount;
         }
 
-        public void addDeposited(double amount) {
+        /**
+         * Adds to the total amount deposited by the business user.
+         *
+         * @param amount the amount to add
+         */
+        public void addDeposited(final double amount) {
             this.deposited += amount;
         }
     }
 
+    /**
+     * Adds an amount to the account balance if the deposit is within the allowed limit.
+     *
+     * @param user     the user performing the operation
+     * @param amount   the amount to be added
+     * @param currency the currency of the amount
+     */
     @Override
-    public void addBalance(User user, double amount, String currency) {
-        BusinessUser businessUser = getBusinessUser(user.getEmail());
+    public void addBalance(final User user, final double amount, final String currency) {
+        final BusinessUser businessUser = getBusinessUser(user.getEmail());
 
         if (businessUser == null) {
             return;
         }
 
-        if(businessUser.getRole().equals("employee") && amount > depositLimit){
+        if (businessUser.getRole().equals("employee") && amount > depositLimit) {
             return;
         }
 
@@ -91,34 +138,54 @@ public class BusinessAccount extends Account {
         businessUser.addDeposited(amount);
     }
 
+    /**
+     * Removes an amount from the account balance if within the allowed spending limit.
+     *
+     * @param user        the user performing the operation
+     * @param amount      the amount to be removed
+     * @param argCurrency the currency of the amount
+     * @param commerciant the commerciant involved in the transaction
+     * @return {@code true} if the operation was successful, {@code false} otherwise
+     */
     @Override
-    public boolean removeBalance(User user, double amount, String currency, String commerciant) {
-        BusinessUser businessUser = getBusinessUser(user.getEmail());
+    public boolean removeBalance(final User user, final double amount, final String argCurrency,
+                                 final String commerciant) {
+        final BusinessUser businessUser = getBusinessUser(user.getEmail());
 
         if (businessUser == null) {
             return false;
         }
 
-        if(businessUser.getRole().equals("employee") && amount > spendingLimit){
+        if (businessUser.getRole().equals("employee") && amount > spendingLimit) {
             return false;
         }
 
-        return super.removeBalance(user, amount, currency, commerciant);
+        return super.removeBalance(user, amount, argCurrency, commerciant);
     }
 
+    /**
+     * Removes an amount from the account balance, considering commission and cashback.
+     *
+     * @param user       the user performing the operation
+     * @param amount     the amount to be removed
+     * @param commission the commission applied to the transaction
+     * @param cashback   the cashback applied to the transaction
+     * @return {@code true} if the operation was successful, {@code false} otherwise
+     */
     @Override
-    public boolean removeBalance(User user, double amount, double commission, double cashback) {
-        BusinessUser businessUser = getBusinessUser(user.getEmail());
+    public boolean removeBalance(final User user, final double amount, final double commission,
+                                 final double cashback) {
+        final BusinessUser businessUser = getBusinessUser(user.getEmail());
 
         if (businessUser == null) {
             return false;
         }
 
-        if(businessUser.getRole().equals("employee") && amount > spendingLimit){
+        if (businessUser.getRole().equals("employee") && amount > spendingLimit) {
             return false;
         }
 
-        boolean result = super.removeBalance(user, amount, commission, cashback);
+        final boolean result = super.removeBalance(user, amount, commission, cashback);
         if (!result) {
             return false;
         }
@@ -128,34 +195,53 @@ public class BusinessAccount extends Account {
         return true;
     }
 
-    public boolean setSpendingLimit(User user, double spendingLimit){
-        BusinessUser businessUser = getBusinessUser(user.getEmail());
+    /**
+     * Sets the spending limit for the account.
+     *
+     * @param user             the user performing the operation
+     * @param argSpendingLimit the new spending limit
+     * @return {@code true} if the operation was successful, {@code false} otherwise
+     */
+    public boolean setSpendingLimit(final User user, final double argSpendingLimit) {
+        final BusinessUser businessUser = getBusinessUser(user.getEmail());
 
         if (businessUser == null || !businessUser.getRole().equals("owner")) {
             return false;
         }
 
-        this.spendingLimit = spendingLimit;
+        this.spendingLimit = argSpendingLimit;
         return true;
     }
 
-    public boolean setDepositLimit(User user, double depositLimit){
-        BusinessUser businessUser = getBusinessUser(user.getEmail());
+    /**
+     * Sets the deposit limit for the account.
+     *
+     * @param user             the user performing the operation
+     * @param argSpendingLimit the new deposit limit
+     * @return {@code true} if the operation was successful, {@code false} otherwise
+     */
+    public boolean setDepositLimit(final User user, final double argSpendingLimit) {
+        final BusinessUser businessUser = getBusinessUser(user.getEmail());
 
         if (businessUser == null || !businessUser.getRole().equals("owner")) {
             return false;
         }
 
-        this.depositLimit = depositLimit;
+        this.depositLimit = argSpendingLimit;
         return true;
     }
 
+    /**
+     * Retrieves a list of all users associated with the account, including business users.
+     *
+     * @return a list of users
+     */
     @Override
     public List<User> getUsers() {
-        List<User> users = new ArrayList<>();
+        final List<User> users = new ArrayList<>();
 
         users.add(getOwner());
-        for (BusinessUser businessUser : this.businessUsers) {
+        for (final BusinessUser businessUser : this.businessUsers) {
             users.add(businessUser.getUser());
         }
 

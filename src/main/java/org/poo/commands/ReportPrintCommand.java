@@ -43,6 +43,11 @@ public final class ReportPrintCommand implements CommandHandler {
         this.transactions = new ArrayList<>();
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         boolean accountFound = false;

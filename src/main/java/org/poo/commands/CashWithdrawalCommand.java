@@ -12,6 +12,9 @@ import org.poo.bankInput.transactions.InsufficientFundsTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.main.Main;
 
+/**
+ * The type Cash withdrawal command.
+ */
 @AllArgsConstructor
 public class CashWithdrawalCommand implements CommandHandler {
 
@@ -20,30 +23,36 @@ public class CashWithdrawalCommand implements CommandHandler {
     private final String email;
     private final int timestamp;
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        User user = Main.getUser(email);
+        final User user = Main.getUser(email);
 
         if (user == null) {
             Utils.userNotFound(output, "cashWithdrawal");
             return;
         }
 
-        Card card = Main.getCard(user, cardNumber);
+        final Card card = Main.getCard(user, cardNumber);
 
         if (card == null) {
             Utils.cardNotFound(output, "cashWithdrawal");
             return;
         }
 
-        Account account = card.getAccount();
+        final Account account = card.getAccount();
 
         if (!account.removeBalance(user, amount, "RON", null)) {
             account.addTransaction(new InsufficientFundsTransaction(timestamp));
             return;
         }
 
-        account.addTransaction(new CashWithdrawalTransaction(timestamp, "Cash withdrawal of " + amount, amount));
+        account.addTransaction(new CashWithdrawalTransaction(timestamp,
+                "Cash withdrawal of " + amount, amount));
     }
 
     private void cardNotFoundOutput(final ArrayNode output) {

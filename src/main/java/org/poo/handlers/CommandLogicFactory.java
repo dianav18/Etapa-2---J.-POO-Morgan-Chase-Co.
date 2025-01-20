@@ -1,10 +1,33 @@
 package org.poo.handlers;
 
 import org.poo.bankInput.Account;
-import org.poo.bankInput.Commerciant;
-import org.poo.bankInput.SpendingThreshold;
 import org.poo.bankInput.User;
-import org.poo.commands.*;
+import org.poo.commands.AcceptSplitPaymentCommand;
+import org.poo.commands.AddAccountCommand;
+import org.poo.commands.AddCardsCommand;
+import org.poo.commands.AddFundsCommand;
+import org.poo.commands.AddInterestCommand;
+import org.poo.commands.AddNewBusinessAssociateCommand;
+import org.poo.commands.BusinessReportCommand;
+import org.poo.commands.CashWithdrawalCommand;
+import org.poo.commands.ChangeDepositLimitCommand;
+import org.poo.commands.ChangeInterestRateCommand;
+import org.poo.commands.ChangeSpendingLimitCommand;
+import org.poo.commands.CheckCardStatusCommand;
+import org.poo.commands.DeleteAccountCommand;
+import org.poo.commands.DeleteCardCommand;
+import org.poo.commands.PayOnlineCommand;
+import org.poo.commands.PrintTransactionsCommand;
+import org.poo.commands.PrintUsersCommand;
+import org.poo.commands.RejectSplitPaymentCommand;
+import org.poo.commands.ReportPrintCommand;
+import org.poo.commands.SendMoneyCommand;
+import org.poo.commands.SetAliasCommand;
+import org.poo.commands.SetMinBalanceCommand;
+import org.poo.commands.SpendingReportPrintCommand;
+import org.poo.commands.SplitPaymentCommand;
+import org.poo.commands.UpgradePlanCommand;
+import org.poo.commands.WithdrawSavingsCommand;
 import org.poo.fileio.CommandInput;
 
 import java.util.List;
@@ -33,7 +56,7 @@ public final class CommandLogicFactory {
             final List<User> users,
             final List<Account> accounts,
             final CurrencyConverter currencyConverter
-            ) {
+    ) {
         return switch (command.getCommand()) {
             case "printTransactions" -> new PrintTransactionsCommand(
                     command.getEmail(), command.getTimestamp(), users);
@@ -167,7 +190,6 @@ public final class CommandLogicFactory {
                     command.getSplitPaymentType()
             );
             default -> {
-                System.out.println("Invalid command " + command.getCommand());
                 yield null;
             }
         };

@@ -9,6 +9,11 @@ import lombok.Getter;
 @Getter
 public final class InsufficientFundsTransaction extends Transaction {
 
+    /**
+     * Instantiates a new Insufficient funds transaction.
+     *
+     * @param timestamp the timestamp
+     */
     public InsufficientFundsTransaction(final int timestamp) {
         super(timestamp, "Insufficient funds", "insufficientFunds");
     }

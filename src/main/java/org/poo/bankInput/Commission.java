@@ -1,26 +1,42 @@
 package org.poo.bankInput;
 
-import org.poo.handlers.CurrencyConverter;
 import org.poo.main.Main;
 
-public class Commission {
-    public static double calculateCommission(final Account account, final double amount, final String currency) {
+public final class Commission {
+    private Commission() {
+    }
+
+    /**
+     * Calculates the commission for a transaction based on the account's owner plan.
+     *
+     * @param account  the account
+     * @param amount   the amount of the transaction
+     * @param currency the currency of the transaction
+     * @return the commission amount
+     */
+    public static double calculateCommission(final Account account, final double amount,
+                                             final String currency) {
         final double ronAmount = Main.getCurrencyConverter().convert(amount, currency, "RON");
+        final double standardCommissionPercentage = 0.002;
+        final double silverCommissionPercentage = 0.001;
+        final double checkAmount = 500;
 
         switch (account.getOwner().getPlan()) {
             case "standard" -> {
-                return amount * 0.002;
+                return amount * standardCommissionPercentage;
             }
             case "student", "gold" -> {
                 return 0;
             }
             case "silver" -> {
-                if (ronAmount < 500) {
+                if (ronAmount < checkAmount) {
                     return 0;
                 }
-                return amount * 0.001;
+                return amount * silverCommissionPercentage;
+            }
+            default -> {
+                return 0;
             }
         }
-        return 0;
     }
 }

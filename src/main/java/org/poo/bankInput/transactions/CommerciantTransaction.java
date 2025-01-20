@@ -19,11 +19,12 @@ public final class CommerciantTransaction extends Transaction {
     /**
      * Instantiates a new Commerciant transaction.
      *
+     * @param user        the user
      * @param commerciant the name of the commerciant involved in the transaction
      * @param amount      the amount paid in the transaction.
      * @param timestamp   the timestamp of the transaction at witch it occurred.
      */
-    public CommerciantTransaction(User user, final String commerciant,
+    public CommerciantTransaction(final User user, final String commerciant,
                                   final double amount, final int timestamp) {
         super(timestamp, "Card payment", "commerciant");
         this.user = user;

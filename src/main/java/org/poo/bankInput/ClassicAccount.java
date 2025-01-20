@@ -7,6 +7,7 @@ public class ClassicAccount extends Account {
     /**
      * Instantiates a new Classic account.
      *
+     * @param owner    the owner
      * @param iban     the iban of the account
      * @param currency the currency of the account
      */

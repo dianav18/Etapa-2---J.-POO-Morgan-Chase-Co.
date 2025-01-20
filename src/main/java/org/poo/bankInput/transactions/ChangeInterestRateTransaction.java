@@ -13,7 +13,7 @@ public final class ChangeInterestRateTransaction extends Transaction {
     /**
      * Instantiates a new Change interest rate transaction.
      *
-     * @param timestamp    the timestamp of the transaction,
+     * @param timestamp    the timestamp of the transaction
      *                     indicating when the interest rate change occurred.
      * @param interestRate the new interest rate applied to the account.
      * @param description  a description of the interest rate change.

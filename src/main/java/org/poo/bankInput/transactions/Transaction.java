@@ -16,6 +16,7 @@ public abstract class Transaction {
      *
      * @param timestamp   the timestamp of the transaction
      * @param description the description of the transaction
+     * @param commandName the command name
      */
     public Transaction(final int timestamp, final String description, final String commandName) {
         this.timestamp = timestamp;
@@ -30,11 +31,21 @@ public abstract class Transaction {
      */
     public abstract void accept(TransactionVisitor visitor);
 
-    public boolean allowsDuplication(){
+    /**
+     * Allows duplication boolean.
+     *
+     * @return the boolean
+     */
+    public boolean allowsDuplication() {
         return false;
     }
 
-    public int order(){
+    /**
+     * Order int.
+     *
+     * @return the int
+     */
+    public int order() {
         return 0;
     }
 }

@@ -1,7 +1,11 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.bankInput.*;
+import org.poo.bankInput.Account;
+import org.poo.bankInput.BusinessAccount;
+import org.poo.bankInput.ClassicAccount;
+import org.poo.bankInput.SavingsAccount;
+import org.poo.bankInput.User;
 import org.poo.bankInput.transactions.AccountCreatedTransaction;
 import org.poo.handlers.CommandHandler;
 import org.poo.utils.Utils;
@@ -40,6 +44,11 @@ public final class AddAccountCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         for (final User user : users) {

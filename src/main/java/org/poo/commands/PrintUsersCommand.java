@@ -27,6 +27,11 @@ public final class PrintUsersCommand implements CommandHandler {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         final ObjectMapper objectMapper = new ObjectMapper();

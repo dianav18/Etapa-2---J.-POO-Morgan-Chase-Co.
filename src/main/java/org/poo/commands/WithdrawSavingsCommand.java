@@ -13,6 +13,9 @@ import org.poo.handlers.CommandHandler;
 import org.poo.handlers.GetUserAge;
 import org.poo.main.Main;
 
+/**
+ * The type Withdraw savings command.
+ */
 @AllArgsConstructor
 public class WithdrawSavingsCommand implements CommandHandler {
     private final String accountIban;
@@ -20,19 +23,27 @@ public class WithdrawSavingsCommand implements CommandHandler {
     private final String currency;
     private final int timestamp;
 
+    private static final int AGE_OF_CONSENT = 21;
+
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
-        Account account = Main.getAccount(accountIban);
+        final Account account = Main.getAccount(accountIban);
 
         if (account == null) {
             Utils.accountNotFound(output, "withdrawSavings");
             return;
         }
 
-        User user = account.getOwner();
+        final User user = account.getOwner();
 
-        if (GetUserAge.getUserAge(user.getBirthDate()) < 21) {
-            account.addTransaction(new GenericTransaction("You don't have the minimum age required."));
+        if (GetUserAge.getUserAge(user.getBirthDate()) < AGE_OF_CONSENT) {
+            account.addTransaction(new GenericTransaction(
+                    "You don't have the minimum age required."));
             return;
         }
 
@@ -43,7 +54,7 @@ public class WithdrawSavingsCommand implements CommandHandler {
 
         Account classicAccount = null;
 
-        for (Account userAccount : user.getAccounts()) {
+        for (final Account userAccount : user.getAccounts()) {
             if (userAccount.getType().equals("classic")) {
                 classicAccount = userAccount;
             }
@@ -66,7 +77,9 @@ public class WithdrawSavingsCommand implements CommandHandler {
 
         classicAccount.addBalance(user, amount, currency);
 
-        account.addTransaction(new WithdrawSavingsTransaction(timestamp,  amount, classicAccount.getAccountIBAN(), accountIban));
-        classicAccount.addTransaction(new WithdrawSavingsTransaction(timestamp, amount, classicAccount.getAccountIBAN(), accountIban));
+        account.addTransaction(new WithdrawSavingsTransaction(timestamp, amount,
+                classicAccount.getAccountIBAN(), accountIban));
+        classicAccount.addTransaction(new WithdrawSavingsTransaction(timestamp, amount,
+                classicAccount.getAccountIBAN(), accountIban));
     }
 }

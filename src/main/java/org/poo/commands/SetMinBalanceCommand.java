@@ -36,6 +36,11 @@ public final class SetMinBalanceCommand implements CommandHandler {
         this.users = users;
     }
 
+    /**
+     * Execute.
+     *
+     * @param output the output
+     */
     @Override
     public void execute(final ArrayNode output) {
         for (final User user : users) {
