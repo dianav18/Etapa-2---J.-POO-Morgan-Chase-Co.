@@ -1,4 +1,4 @@
-### Bank Management System
+# Bank Management System
 
 ## Overview 
 This Java project implements various functionalities related to a banking system, utilizing several
